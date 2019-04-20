@@ -21,15 +21,21 @@ plugins {
     id 'java'
     id 'idea'
     id 'application'
+    id 'org.openjfx.javafxplugin' version '0.0.7'
 }
 
 group 'edu.wpi.dyn.ravana'
 version '0.1.0'
-sourceCompatibility = 1.9
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
 mainClassName = 'edu.wpi.dyn.ravana.Main'
 
 wrapper {
     gradleVersion = '5.2.1'
+}
+
+javafx {
+    modules = [ 'javafx.controls', 'javafx.fxml' ]
 }
 
 repositories {
@@ -38,10 +44,11 @@ repositories {
 
 dependencies {
     compile(
-            [group: 'com.jfoenix', name: 'jfoenix', version: '9.+'],
-            [group: 'org.openjfx', name: 'javafx', version: '13-ea+5'],
-            [group: 'org.openjfx', name: 'javafx-base', version: '13-ea+5'],
-            [group: 'org.openjfx', name: 'javafx-controls', version: '13-ea+5'],
+            [group: 'com.jfoenix', name: 'jfoenix', version: '8.+'],
+            [group: 'org.openjfx', name: 'javafx', version: '11.+'],
+            [group: 'org.openjfx', name: 'javafx-base', version: '11.+'],
+            [group: 'org.openjfx', name: 'javafx-controls', version: '11.+'],
+            [group: 'org.openjfx', name: 'javafx-fxml', version: '11.+'],
             [group: 'org.projectlombok', name: 'lombok', version: '1.18.6'],
             [group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.11.+'],
 			[group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.9.+'],
@@ -54,12 +61,13 @@ dependencies {
             [group: 'org.mockito', name: 'mockito-core', version: '2.+'],
             [group: 'org.hamcrest', name: 'hamcrest-all', version: '1.3'],
             [group: 'org.testfx', name: 'testfx-core', version: '4.0.+'],
-            [group: 'org.testfx', name: 'textfx-junit5', version: '4.0.15-alpha'],
+//            [group: 'org.testfx', name: 'textfx-junit5', version: '4.0.15-alpha'],
 
-            [group: 'com.jfoenix', name: 'jfoenix', version: '9.+'],
-            [group: 'org.openjfx', name: 'javafx', version: '13-ea+5'],
-            [group: 'org.openjfx', name: 'javafx-base', version: '13-ea+5'],
-            [group: 'org.openjfx', name: 'javafx-controls', version: '13-ea+5'],
+            [group: 'com.jfoenix', name: 'jfoenix', version: '8.+'],
+            [group: 'org.openjfx', name: 'javafx', version: '11.+'],
+            [group: 'org.openjfx', name: 'javafx-base', version: '11.+'],
+            [group: 'org.openjfx', name: 'javafx-controls', version: '11.+'],
+            [group: 'org.openjfx', name: 'javafx-fxml', version: '11.+'],
             [group: 'org.projectlombok', name: 'lombok', version: '1.18.6'],
             [group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.11.+'],
             [group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.9.+'],

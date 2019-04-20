@@ -19,32 +19,8 @@
 
 package edu.wpi.dyn.ravana;
 
-import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.stage.Stage;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import java.net.URL;
 
-import java.io.IOException;
-
-
-public class Main extends Application {
-
-	private static final Logger logger = LogManager.getLogger();
-
-	public static void main(String[] args) {
-		logger.info("Application start");
-		launch();
-	}
-
-	@Override
-	public void start(Stage primaryStage) throws IOException {
-		Parent root = FXMLLoader.load(FileLoader.fxml_main);
-		primaryStage.setTitle("Deuterium Knowledge Engine");
-		Scene scene = new Scene(root);
-		primaryStage.setScene(scene);
-		primaryStage.show();
-	}
+public class FileLoader {
+	public static final URL fxml_main = FileLoader.class.getResource("/fxml/main.fxml");
 }
