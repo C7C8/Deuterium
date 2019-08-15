@@ -19,9 +19,7 @@
 
 package dev.crmyers.deuterium.data;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -30,7 +28,8 @@ import java.util.UUID;
 /**
  * Class to represent a single Deuterium node.
  */
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class Node {
@@ -38,4 +37,12 @@ public class Node {
 	private String name;
 	private String details;
 	Map<UUID, Node> neighbors = new HashMap<>();
+
+	@Override
+	public String toString() {
+		String builder = "Node(id=\"" + id + "\", name=\"" + name + "\", details=\"" + details + "\", neighbors=" +
+				neighbors.keySet() + ")";
+		return builder;
+	}
 }
+

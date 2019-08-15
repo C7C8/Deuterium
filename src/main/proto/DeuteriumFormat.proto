@@ -2,7 +2,7 @@ syntax = "proto3";
 package dev.crmyers.deuterium.data.protobuf;
 
 message Node {
-    string id = 1;
+    string id = 1 ;
     string name = 20;
     string details = 30;
     repeated string neighbors = 40;

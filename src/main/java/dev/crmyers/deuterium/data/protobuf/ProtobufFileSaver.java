@@ -19,11 +19,12 @@
 
 package dev.crmyers.deuterium.data.protobuf;
 
-import dev.crmyers.deuterium.data.DeuteriumFile;
-import dev.crmyers.deuterium.data.FileSaver;
+import dev.crmyers.deuterium.data.*;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.util.UUID;
+import java.util.zip.GZIPOutputStream;
 
 /**
  * Implementation of file saving using Protobuf.
@@ -53,7 +54,58 @@ public class ProtobufFileSaver implements FileSaver {
 	 */
 	@Override
 	public void saveNewFile(String filename, DeuteriumFile data) throws FileNotFoundException, IOException {
+		// Step 1: Map a DeuteriumFile object to a Protobuffer-style DeuteriumFile
+		final DeuteriumFormat.DeuteriumFile.Builder protoFile = DeuteriumFormat.DeuteriumFile.newBuilder()
+				.setName(data.getName())
+				.setDescription(data.getDescription());
 
+		for (Graph inputGraph : data.getGraphs().values()) {
+			// Basic graph metadata
+			final DeuteriumFormat.Graph.Builder protoGraph = DeuteriumFormat.Graph.newBuilder()
+					.setId(inputGraph.getId().toString())
+					.setName(inputGraph.getName())
+					.setDescription(inputGraph.getDescription());
+
+			// Convert nodes
+			for (Node inputNode : inputGraph.getNodes().values()) {
+				// Basic node metadata
+				final DeuteriumFormat.Node.Builder protoNode = DeuteriumFormat.Node.newBuilder()
+						.setId(inputNode.getId().toString())
+						.setName(inputNode.getName())
+						.setDetails(inputNode.getDetails());
+
+				// Copy over neighbors
+				for (UUID id : inputNode.getNeighbors().keySet())
+					protoNode.addNeighbors(id.toString());
+
+				protoGraph.putNodes(inputNode.getId().toString(), protoNode.build());
+			}
+
+			// Convert histories
+			for (NodeHistory inputHistory : inputGraph.getHistory()) {
+				DeuteriumFormat.NodeHistory.Builder protoHistory = DeuteriumFormat.NodeHistory.newBuilder()
+						.setId(inputHistory.getId().toString())
+						.setDate(inputHistory.getDate().getTime())
+						.setEditId(inputHistory.getEditId().toString())
+						.setAction(DeuteriumFormat.NodeHistory.Action.valueOf(inputHistory.getAction().ordinal()))
+						.setChange(inputHistory.getChange());
+				protoGraph.addHistory(protoHistory.build());
+			}
+
+			protoFile.putGraphs(inputGraph.getId().toString(), protoGraph.build());
+		}
+
+		// Build the file, write it out in binary, and compress it
+		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+		GZIPOutputStream compressor = new GZIPOutputStream(outputStream);
+		protoFile.build().writeTo(compressor);
+		compressor.close();
+
+		// Write to file! Prepend with magic number ("DEUT")
+		FileOutputStream outputFile = new FileOutputStream(filename);
+		outputFile.write("DEUT".getBytes(StandardCharsets.UTF_8));
+		outputFile.write(outputStream.toByteArray());
+		outputFile.close();
 	}
 
 	/**
