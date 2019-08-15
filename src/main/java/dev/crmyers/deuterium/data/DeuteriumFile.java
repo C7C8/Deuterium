@@ -17,10 +17,23 @@
  * along with Deuterium.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package edu.wpi.dyn.ravana;
+package dev.crmyers.deuterium.data;
 
-import java.net.URL;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-public class FileLoader {
-	public static final URL fxml_main = FileLoader.class.getResource("/fxml/main.fxml");
+import java.util.Map;
+import java.util.UUID;
+
+/**
+ * Class to represent a Deuterium save file (.d2o)
+ */
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class DeuteriumFile {
+	String name;
+	String description;
+	Map<UUID, Graph> graphs;
 }

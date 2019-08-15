@@ -1,0 +1,40 @@
+syntax = "proto3";
+package dev.crmyers.deuterium.data.protobuf;
+
+message Node {
+    string id = 1;
+    string name = 20;
+    string details = 30;
+    repeated string neighbors = 40;
+};
+
+message NodeHistory {
+    string id = 1;
+    fixed64 date = 20;
+    string editId = 30;
+    enum Action {
+        reserved 6 to 20;
+        ADD = 0;
+        DELETE = 1;
+        EDIT_NAME = 2;
+        EDIT_DETAILS = 3;
+        ADD_NEIGHBOR = 4;
+        DEL_NEIGHBOR = 5;
+    }
+    Action action = 40;
+    string change = 50;
+}
+
+message Graph {
+    string id = 1;
+    string name = 20;
+    string description = 30;
+    map<string, Node> nodes = 40;
+    repeated NodeHistory history = 50;
+}
+
+message DeuteriumFile {
+    string name = 1;
+    string description = 20;
+    map<string, Graph> graphs = 30;
+}
