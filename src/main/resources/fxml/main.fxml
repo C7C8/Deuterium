@@ -1,63 +1,95 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Label?>
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXNodesList?>
+<?import java.lang.String?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.SeparatorMenuItem?>
-<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
 
-<VBox prefHeight="400.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1">
+<VBox prefHeight="1080.0" prefWidth="1920.0" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1">
   <children>
-    <MenuBar VBox.vgrow="NEVER">
-      <menus>
-        <Menu mnemonicParsing="false" text="File">
-          <items>
-            <MenuItem mnemonicParsing="false" text="New" />
-            <MenuItem mnemonicParsing="false" text="Open…" />
-            <Menu mnemonicParsing="false" text="Open Recent" />
-            <SeparatorMenuItem mnemonicParsing="false" />
-            <MenuItem mnemonicParsing="false" text="Close" />
-            <MenuItem mnemonicParsing="false" text="Save" />
-            <MenuItem mnemonicParsing="false" text="Save As…" />
-            <MenuItem mnemonicParsing="false" text="Revert" />
-            <SeparatorMenuItem mnemonicParsing="false" />
-            <MenuItem mnemonicParsing="false" text="Preferences…" />
-            <SeparatorMenuItem mnemonicParsing="false" />
-            <MenuItem mnemonicParsing="false" text="Quit" />
-          </items>
-        </Menu>
-        <Menu mnemonicParsing="false" text="Edit">
-          <items>
-            <MenuItem mnemonicParsing="false" text="Undo" />
-            <MenuItem mnemonicParsing="false" text="Redo" />
-            <SeparatorMenuItem mnemonicParsing="false" />
-            <MenuItem mnemonicParsing="false" text="Cut" />
-            <MenuItem mnemonicParsing="false" text="Copy" />
-            <MenuItem mnemonicParsing="false" text="Paste" />
-            <MenuItem mnemonicParsing="false" text="Delete" />
-            <SeparatorMenuItem mnemonicParsing="false" />
-            <MenuItem mnemonicParsing="false" text="Select All" />
-            <MenuItem mnemonicParsing="false" text="Unselect All" />
-          </items>
-        </Menu>
-        <Menu mnemonicParsing="false" text="Help">
-          <items>
-            <MenuItem mnemonicParsing="false" text="About MyHelloApp" />
-          </items>
-        </Menu>
-      </menus>
-    </MenuBar>
-    <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" VBox.vgrow="ALWAYS">
-      <children>
-        <Label alignment="CENTER" layoutX="155.0" layoutY="177.0" style="&#10;" text="Drag components from Library here…" textAlignment="CENTER" textFill="#9f9f9f" wrapText="false">
-          <font>
-            <Font size="18.0" />
-          </font>
-        </Label>
-      </children>
-    </AnchorPane>
+      <MenuBar id="menuBar" prefHeight="21.0" prefWidth="640.0">
+        <menus>
+          <Menu mnemonicParsing="false" text="File">
+            <items>
+              <MenuItem mnemonicParsing="false" text="Open (ctrl-o)" />
+                  <MenuItem mnemonicParsing="false" text="Save (ctrl-s)" />
+                  <MenuItem mnemonicParsing="false" text="Save as (ctrl-shift-s)" />
+                  <SeparatorMenuItem mnemonicParsing="false" />
+            </items>
+          </Menu>
+          <Menu mnemonicParsing="false" text="Edit">
+               <items>
+                  <MenuItem mnemonicParsing="false" text="Undo (ctrl-z)" />
+                  <MenuItem mnemonicParsing="false" text="Redo (ctrl-y)" />
+               </items>
+          </Menu>
+          <Menu mnemonicParsing="false" text="Help">
+            <items>
+              <MenuItem mnemonicParsing="false" text="About" />
+            </items>
+          </Menu>
+        </menus>
+      </MenuBar>
+      <BorderPane prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
+         <center>
+            <TabPane minHeight="-Infinity" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
+              <tabs>
+                <Tab text="Untitled Tab 1" />
+              </tabs>
+            </TabPane>
+         </center>
+         <left>
+            <VBox prefWidth="100.0" BorderPane.alignment="CENTER" VBox.vgrow="ALWAYS">
+               <children>
+                  <JFXNodesList alignment="TOP_CENTER" nodeOrientation="LEFT_TO_RIGHT" rotate="-90.0" VBox.vgrow="NEVER">
+                      <JFXButton buttonType="RAISED" text="Test">
+                        <styleClass>
+                           <String fx:value="animated-option-button" />
+                           <String fx:value="animated-option-sub-button" />
+                        </styleClass></JFXButton>
+                      <JFXButton text="Test 2">
+                        <styleClass>
+                           <String fx:value="animated-option-button" />
+                           <String fx:value="animated-option-sub-button" />
+                        </styleClass></JFXButton>
+                      <JFXButton text="Test 3">
+                        <styleClass>
+                           <String fx:value="animated-option-button" />
+                           <String fx:value="animated-option-sub-button" />
+                        </styleClass></JFXButton>
+                  </JFXNodesList>
+                  <JFXNodesList rotate="-90.0">
+                   <JFXButton buttonType="RAISED" text="Test 4">
+                        <styleClass>
+                           <String fx:value="animated-option-button" />
+                           <String fx:value="animated-option-sub-button" />
+                        </styleClass></JFXButton>
+                   <JFXButton buttonType="RAISED" text="Test 5">
+                        <styleClass>
+                           <String fx:value="animated-option-button" />
+                           <String fx:value="animated-option-sub-button" />
+                        </styleClass></JFXButton>
+                   <JFXButton buttonType="RAISED" text="Test 6">
+                        <styleClass>
+                           <String fx:value="animated-option-button" />
+                           <String fx:value="animated-option-sub-button" />
+                        </styleClass></JFXButton>
+                  </JFXNodesList>
+                  <JFXNodesList rotate="-90.0">
+                   <JFXButton buttonType="RAISED" text="Test 7" />
+                   <JFXButton buttonType="RAISED" text="Test 8" />
+                   <JFXButton buttonType="RAISED" text="Test 9" />
+                  </JFXNodesList>
+               </children>
+            </VBox>
+         </left>
+      </BorderPane>
   </children>
 </VBox>

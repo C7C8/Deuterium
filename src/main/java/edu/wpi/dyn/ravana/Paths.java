@@ -21,6 +21,6 @@ package edu.wpi.dyn.ravana;
 
 import java.net.URL;
 
-public class FileLoader {
-	public static final URL fxml_main = FileLoader.class.getResource("/fxml/main.fxml");
+class Paths {
+	static final URL fxml_main = Paths.class.getResource("/fxml/main.fxml");
 }

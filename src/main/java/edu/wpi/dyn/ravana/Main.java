@@ -41,7 +41,7 @@ public class Main extends Application {
 
 	@Override
 	public void start(Stage primaryStage) throws IOException {
-		Parent root = FXMLLoader.load(FileLoader.fxml_main);
+		Parent root = FXMLLoader.load(Paths.fxml_main);
 		primaryStage.setTitle("Deuterium Knowledge Engine");
 		Scene scene = new Scene(root);
 		primaryStage.setScene(scene);
