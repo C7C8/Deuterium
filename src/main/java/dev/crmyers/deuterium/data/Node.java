@@ -19,10 +19,11 @@
 
 package dev.crmyers.deuterium.data;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -36,13 +37,10 @@ public class Node {
 	private UUID id;
 	private String name;
 	private String details;
-	Map<UUID, Node> dependencies = new HashMap<>();
-	Map<UUID, Node> dependents = new HashMap<>();
 
 	@Override
 	public String toString() {
-		return "Node(id=\"" + id + "\", name=\"" + name + "\", details=\"" + details + "\", dependencies=" +
-				dependencies.keySet() + ", dependents=" + dependents + ")";
+		return "Node(id=\"" + id + "\", name=\"" + name + "\", details=\"" + details + ")";
 	}
 }
 

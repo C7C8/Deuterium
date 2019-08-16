@@ -57,7 +57,8 @@ dependencies {
             [group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-yaml', version: '2.9.+'],
             [group: 'com.google.protobuf', name: 'protobuf-java', version: '3.9.+'],
             [group: 'com.google.protobuf', name: 'protobuf-java-util', version: '3.9.+'],
-            [group: 'com.google.inject', name: 'guice', version: '4.+']
+            [group: 'com.google.inject', name: 'guice', version: '4.+'],
+            [group: 'com.google.guava', name: 'guava', version: '28.0-jre']
     )
     testCompile(
             [group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.+'],
@@ -81,7 +82,8 @@ dependencies {
             [group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-yaml', version: '2.9.+'],
             [group: 'com.google.protobuf', name: 'protobuf-java', version: '3.9.+'],
             [group: 'com.google.protobuf', name: 'protobuf-java-util', version: '3.9.+'],
-            [group: 'com.google.inject', name: 'guice', version: '4.+']
+            [group: 'com.google.inject', name: 'guice', version: '4.+'],
+            [group: 'com.google.guava', name: 'guava', version: '28.0-jre']
     )
     annotationProcessor(
             [group: 'org.projectlombok', name: 'lombok', version: '1.18.+']

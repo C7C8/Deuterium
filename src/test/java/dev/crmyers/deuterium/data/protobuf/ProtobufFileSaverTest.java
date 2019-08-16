@@ -19,10 +19,11 @@
 
 package dev.crmyers.deuterium.data.protobuf;
 
+import com.google.common.graph.EndpointPair;
 import dev.crmyers.deuterium.BaseTestCase;
 import dev.crmyers.deuterium.data.DeuteriumFile;
+import dev.crmyers.deuterium.data.DeuteriumGraph;
 import dev.crmyers.deuterium.data.FileFormatException;
-import dev.crmyers.deuterium.data.Graph;
 import dev.crmyers.deuterium.data.Node;
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.AfterAll;
@@ -34,17 +35,18 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.UUID;
 
-import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.core.IsNull.notNullValue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Tests for Protobuf file saver.
  */
+@SuppressWarnings("UnstableApiUsage")
 @Log4j2
 class ProtobufFileSaverTest extends BaseTestCase {
 	private static ProtobufFileSaver fileSaver;
@@ -89,10 +91,10 @@ class ProtobufFileSaverTest extends BaseTestCase {
 		assertThat(loadedFile.getGraphs().values().size(), is(equalTo(inputFile.getGraphs().values().size())));
 
 		// Order is irrelevant, the data stored is effectively unordered
-		for (Graph loadedGraph : loadedFile.getGraphs().values()) {
+		for (DeuteriumGraph loadedGraph : loadedFile.getGraphs().values()) {
 			// Get the corresponding graph from the input file and check to make sure it's identical to the loaded one
 			assertThat(loadedGraph.getId(), notNullValue());
-			final Graph inputGraph = inputFile.getGraphs().get(loadedGraph.getId());
+			final DeuteriumGraph inputGraph = inputFile.getGraphs().get(loadedGraph.getId());
 			assertThat(inputGraph, notNullValue());
 
 			assertThat(loadedGraph.getDescription(), equalTo(inputGraph.getDescription()));
@@ -108,18 +110,13 @@ class ProtobufFileSaverTest extends BaseTestCase {
 
 				assertThat(loadedNode.getName(), equalTo(inputNode.getName()));
 				assertThat(loadedNode.getDetails(), equalTo(inputNode.getDetails()));
+			}
 
-				// Ensure that the loaded node's neighbor set contains all elements in the original set of nodes,
-				// *except* our current node's ID.
-				for (UUID neighborId : loadedGraph.getNodes().keySet()) {
-					if (neighborId.equals(loadedNode.getId())) {
-						assertThat(loadedNode.getDependencies().keySet(), not(hasItem(neighborId)));
-						continue;
-					}
-
-					assertThat(loadedNode.getDependencies().keySet(), hasItem(neighborId));
-					assertThat(loadedGraph.getNodes().get(neighborId).getDependents().keySet(), hasItem(loadedNode.getId()));
-				}
+			// Make sure the graph was copied over correctly
+			for (EndpointPair<Node> inputEdge : inputGraph.getGraph().edges()) {
+				final Node from = loadedGraph.getNodes().get(inputEdge.nodeU().getId());
+				final Node to = loadedGraph.getNodes().get(inputEdge.nodeV().getId());
+				assertTrue(loadedGraph.getGraph().hasEdgeConnecting(from, to));
 			}
 
 			// Make sure all history was copied over correctly. Order DOES matter here.

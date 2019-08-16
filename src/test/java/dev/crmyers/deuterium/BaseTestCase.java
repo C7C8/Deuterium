@@ -33,30 +33,35 @@ public class BaseTestCase {
 	 */
 	protected DeuteriumFile generateTestFile() {
 		// Make 5 different graphs
-		final HashMap<UUID, Graph> graphs = new HashMap<>();
+		final HashMap<UUID, DeuteriumGraph> graphs = new HashMap<>();
 		for (int i = 0; i < 5; i++) {
+
+			final DeuteriumGraph graph = new DeuteriumGraph();
+			graph.setId(UUID.randomUUID());
+			graph.setName("Graph " + i);
+			graph.setDescription("Graph description " + i);
+
 			// Assemble a list of nodes with random IDs
 			final HashMap<UUID, Node> nodes = new HashMap<>();
 			for (int j = 1; j <= 10; j++) {
 				final UUID nodeId = UUID.randomUUID();
-				nodes.put(nodeId, new Node(nodeId, "Node " + j, "Details " + j , new HashMap<>(), new HashMap<>()));
+				nodes.put(nodeId, new Node(nodeId, "Node " + j, "Details " + j));
 			}
+			graph.setNodes(nodes);
 
 			// Link all nodes together and add some ADD history to them
 			final ArrayList<NodeHistory> nodeHistories = new ArrayList<>();
 			for (Node node : nodes.values()) {
 				for (Node neighbor : nodes.values()) {
-					if (neighbor == node)
+					if (node.getId().equals(neighbor.getId()))
 						continue;
-					node.getDependencies().put(neighbor.getId(), neighbor);
-					neighbor.getDependents().put(node.getId(), node);
+					graph.getGraph().putEdge(node, neighbor);
 				}
 
 				nodeHistories.add(new NodeHistory(UUID.randomUUID(), new Date(), node.getId(), Action.ADD, "Add"));
 			}
-
-			final UUID graphId = UUID.randomUUID();
-			graphs.put(graphId, new Graph(graphId, "Graph " + i, "Description " + i, nodes, nodeHistories));
+			graph.setHistory(nodeHistories);
+			graphs.put(graph.getId(), graph);
 		}
 
 		return new DeuteriumFile("Test file", "Test file description", graphs);

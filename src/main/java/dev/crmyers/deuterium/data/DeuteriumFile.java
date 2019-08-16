@@ -35,5 +35,5 @@ import java.util.UUID;
 public class DeuteriumFile {
 	String name;
 	String description;
-	Map<UUID, Graph> graphs;
+	Map<UUID, DeuteriumGraph> graphs;
 }

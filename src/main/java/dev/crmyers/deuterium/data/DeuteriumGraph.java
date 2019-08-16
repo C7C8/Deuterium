@@ -19,6 +19,8 @@
 
 package dev.crmyers.deuterium.data;
 
+import com.google.common.graph.GraphBuilder;
+import com.google.common.graph.MutableGraph;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -31,10 +33,13 @@ import java.util.*;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Graph {
+public class DeuteriumGraph {
 	UUID id;
 	String name;
 	String description;
 	Map<UUID, Node> nodes = new HashMap<>();
 	List<NodeHistory> history = new ArrayList<>();
+
+	@SuppressWarnings("UnstableApiUsage")
+	MutableGraph<Node> graph = GraphBuilder.directed().build();
 }
