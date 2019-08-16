@@ -30,11 +30,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
-import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.core.IsNull.notNullValue;
 
@@ -99,9 +97,9 @@ public class ProtobufFileSaverTest {
 	 * Test successful save & retrieve operation
 	 */
 	@Test
-	public void successfulSaveAndRetrievalTest() throws IOException {
+	void successfulSaveAndRetrievalTest() throws IOException {
 		final DeuteriumFile inputFile = getTestFile();
-		fileSaver.saveNewFile("successfulSaveAndRetrieval.d2o", inputFile);
+		fileSaver.saveFile("successfulSaveAndRetrieval.d2o", inputFile);
 		final DeuteriumFile loadedFile = fileSaver.loadFile("successfulSaveAndRetrieval.d2o");
 
 		assertThat(loadedFile, notNullValue());
@@ -131,11 +129,15 @@ public class ProtobufFileSaverTest {
 				assertThat(loadedNode.getDetails(), equalTo(inputNode.getDetails()));
 
 				// Ensure that the loaded node's neighbor set contains all elements in the original set of nodes,
-				// *except* our current node's ID. Seriously, Java lambdas are UGLY.
-				assertThat(loadedNode.getNeighbors().keySet(),
-						containsInAnyOrder(loadedNode.getNeighbors().keySet().stream().
-								filter(uuid -> !uuid.equals(loadedNode.getId()))
-								.collect(Collectors.toSet())));
+				// *except* our current node's ID.
+				for (UUID neighbor : loadedGraph.getNodes().keySet()) {
+					if (neighbor.equals(loadedNode.getId())) {
+						assertThat(loadedNode.getNeighbors().keySet(), not(hasItem(neighbor)));
+						continue;
+					}
+
+					assertThat(loadedNode.getNeighbors().keySet(), hasItem(neighbor));
+				}
 			}
 
 			// Make sure all history was copied over correctly. Order DOES matter here.

@@ -32,10 +32,11 @@ public interface FileSaver {
 	 * Load a Deuterium save file and return it in the form of data.
 	 * @param filename Relative filename.
 	 * @return Loaded data, already linked up and ready to go (i.e. graphs should be traversable)
+	 * @throws FileFormatException When file format to load is invalid
 	 * @throws FileNotFoundException Thrown if the file cannot be loaded
 	 * @throws IOException Generic IO exception (e.g. invalid file)
 	 */
-	DeuteriumFile loadFile(String filename) throws FileNotFoundException, IOException;
+	DeuteriumFile loadFile(String filename) throws FileNotFoundException, FileNotFoundException, IOException;
 
 	/**
 	 * Save a Deuterium data object to a new file.
@@ -44,14 +45,5 @@ public interface FileSaver {
 	 * @throws FileNotFoundException Thrown if the file cannot be saved because the containing folder does not exist
 	 * @throws IOException Generic IO exception (e.g. out of space)
 	 */
-	void saveNewFile(String filename, DeuteriumFile data) throws FileNotFoundException, IOException;
-
-	/**
-	 * Update an existing Deuterium file
-	 * @param filename Relative filename.
-	 * @param data Data to save.
-	 * @throws FileNotFoundException Thrown if the file cannot be saved because the containing folder does not exist
-	 * @throws IOException Generic IO exception (e.g. out of space).
-	 */
-	void updateFile(String filename, DeuteriumFile data) throws FileNotFoundException, IOException;
+	void saveFile(String filename, DeuteriumFile data) throws FileNotFoundException, IOException;
 }
