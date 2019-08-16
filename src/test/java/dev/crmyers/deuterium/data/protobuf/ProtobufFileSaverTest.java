@@ -19,28 +19,34 @@
 
 package dev.crmyers.deuterium.data.protobuf;
 
-import dev.crmyers.deuterium.data.*;
+import dev.crmyers.deuterium.BaseTestCase;
+import dev.crmyers.deuterium.data.DeuteriumFile;
+import dev.crmyers.deuterium.data.FileFormatException;
+import dev.crmyers.deuterium.data.Graph;
+import dev.crmyers.deuterium.data.Node;
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
+import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.core.IsNull.notNullValue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * Tests for Protobuf file saver.
  */
 @Log4j2
-public class ProtobufFileSaverTest {
+class ProtobufFileSaverTest extends BaseTestCase {
 	private static ProtobufFileSaver fileSaver;
 
 	/**
@@ -56,41 +62,14 @@ public class ProtobufFileSaverTest {
 	 */
 	@AfterAll
 	static void cleanup_global() {
-
-	}
-
-	/**
-	 * Generate a test file for saving.
-	 * @return Deuterium file object with some test data inside.
-	 */
-	private DeuteriumFile getTestFile() {
-		// Make 5 different graphs
-		final HashMap<UUID, Graph> graphs = new HashMap<>();
-		for (int i = 0; i < 5; i++) {
-			// Assemble a list of nodes with random IDs
-			final HashMap<UUID, Node> nodes = new HashMap<>();
-			for (int j = 1; j <= 10; j++) {
-				final UUID nodeId = UUID.randomUUID();
-				nodes.put(nodeId, new Node(nodeId, "Node " + j, "Details " + j , new HashMap<>()));
-			}
-
-			// Link all nodes together and add some ADD history to them
-			final ArrayList<NodeHistory> nodeHistories = new ArrayList<>();
-			for (Node node : nodes.values()) {
-				for (Node neighbor : nodes.values()) {
-					if (neighbor == node)
-						continue;
-					node.getNeighbors().put(neighbor.getId(), neighbor);
-				}
-
-				nodeHistories.add(new NodeHistory(UUID.randomUUID(), new Date(), node.getId(), Action.ADD, "Add"));
-			}
-
-			final UUID graphId = UUID.randomUUID();
-			graphs.put(graphId, new Graph(graphId, "Graph " + i, "Description " + i, nodes, nodeHistories));
+		File cwd = new File(System.getProperty("user.dir"));
+		File[] d2oFiles = cwd.listFiles();
+		if (d2oFiles == null)
+			return;
+		for (File file : d2oFiles) {
+			if (file.getName().endsWith(".d2o"))
+				file.delete();
 		}
-
-		return new DeuteriumFile("Test file", "Test file description", graphs);
 	}
 
 	/**
@@ -98,7 +77,7 @@ public class ProtobufFileSaverTest {
 	 */
 	@Test
 	void successfulSaveAndRetrievalTest() throws IOException {
-		final DeuteriumFile inputFile = getTestFile();
+		final DeuteriumFile inputFile = generateTestFile();
 		fileSaver.saveFile("successfulSaveAndRetrieval.d2o", inputFile);
 		final DeuteriumFile loadedFile = fileSaver.loadFile("successfulSaveAndRetrieval.d2o");
 
@@ -144,5 +123,21 @@ public class ProtobufFileSaverTest {
 			for (int i = 0; i < loadedGraph.getHistory().size(); i++)
 				assertThat(loadedGraph.getHistory().get(i), equalTo(inputGraph.getHistory().get(i)));
 		}
+	}
+
+	/**
+	 * Test loading a file that doesn't exist
+	 */
+	@Test
+	void loadNonexistentFile() {
+		assertThrows(FileNotFoundException.class, () -> fileSaver.loadFile("does_not_exist.d2o"));
+	}
+
+	@Test
+	void loadCorruptFile() throws IOException {
+		FileOutputStream outputStream = new FileOutputStream(new File("corrupted.d2o"));
+		outputStream.write("This is bad data that should yield an error".getBytes(StandardCharsets.UTF_8));
+		outputStream.close();
+		assertThrows(FileFormatException.class, () -> fileSaver.loadFile("corrupted.d2o"));
 	}
 }
