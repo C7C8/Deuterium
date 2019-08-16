@@ -19,7 +19,10 @@
 
 package dev.crmyers.deuterium.data;
 
-import com.google.common.graph.*;
+import com.google.common.graph.ElementOrder;
+import com.google.common.graph.EndpointPair;
+import com.google.common.graph.GraphBuilder;
+import com.google.common.graph.MutableGraph;
 import dev.crmyers.deuterium.data.exception.CycleException;
 import lombok.*;
 
@@ -61,7 +64,33 @@ public class DeuteriumGraph implements MutableGraph<Node> {
 	 * nodes involved in the cycle.
 	 */
 	public List<Node> solveDependencies(final Node dependent) throws CycleException {
-		return new ArrayList<>(Graphs.reachableNodes(graph, dependent));
+		Stack<Node> stack = new Stack<>();
+		Stack<Node> sorted = new Stack<>();
+		HashSet<Node> visited = new HashSet<>();
+
+		stack.push(dependent);
+
+		while (!stack.empty()) {
+			final Node top = stack.pop();
+			if (!visited.contains(top)) {
+				sorted.push(top);
+				visited.add(top);
+			}
+
+			for (Node node : graph.successors(top)) {
+				// TODO verify this works properly
+				if (node.equals(dependent))
+					throw new CycleException("Cycle detected", visited);
+				if (!visited.contains(node))
+					stack.push(node);
+			}
+		}
+
+		// This DFS returns the nodes in inverse order; this reverses them.
+		ArrayList<Node> ret = new ArrayList<>(sorted.size());
+		while (!sorted.empty())
+			ret.add(sorted.pop());
+		return ret;
 	}
 
 	// Methods from MutableGraph<Node> that delegate to the contained graph object

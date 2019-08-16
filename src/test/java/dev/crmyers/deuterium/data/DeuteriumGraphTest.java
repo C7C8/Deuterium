@@ -33,9 +33,9 @@ import java.util.stream.Stream;
 
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.collection.IsIn.isIn;
 import static org.hamcrest.core.IsCollectionContaining.hasItem;
 import static org.hamcrest.core.IsCollectionContaining.hasItems;
-import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.jupiter.api.Assertions.*;
 
 class DeuteriumGraphTest extends BaseTestCase {
@@ -66,11 +66,20 @@ class DeuteriumGraphTest extends BaseTestCase {
 	 * @param edges Array of letters that, when paired, form edges
 	 * @return A list of node pairs (edges)
 	 */
-	static List<Pair<Node, Node>> makeEdges(String... edges) {
+	private static List<Pair<Node, Node>> makeEdges(String... edges) {
 		final ArrayList<Pair<Node, Node>> ret = new ArrayList<>();
 		for (int i = 0; i < edges.length;)
 			ret.add(new Pair<>(node(edges[i++]), node(edges[i++])));
 		return ret;
+	}
+
+	/**
+	 *  Stupid helper so I don't have to do new String[] {...} for every graph solution
+	 * @param solutions Solutions list
+	 * @return The exact same list. JUnit, you suck.
+	 */
+	private static String[] makeSolutions(String... solutions) {
+		return solutions;
 	}
 
 	/**
@@ -91,12 +100,12 @@ class DeuteriumGraphTest extends BaseTestCase {
 												  "C", "D",
 												  "D", "B");
 		return Stream.of(
-				Arguments.of(graph1, "F", "A B D C F"),
-				Arguments.of(graph1, "C", "B D C"),
-				Arguments.of(graph1, "E", "A B E"),
-				Arguments.of(graph1, "D", "D B"),
-				Arguments.of(graph1, "B", "B"),
-				Arguments.of(graph1, "A", "A")
+				Arguments.of(graph1, "F", makeSolutions("B D C A F", "A B D C F")),
+				Arguments.of(graph1, "C", makeSolutions("B D C")),
+				Arguments.of(graph1, "E", makeSolutions("B A E", "A B E")),
+				Arguments.of(graph1, "D", makeSolutions("B D")),
+				Arguments.of(graph1, "B", makeSolutions("B")),
+				Arguments.of(graph1, "A", makeSolutions("A"))
 		);
 	}
 
@@ -105,7 +114,7 @@ class DeuteriumGraphTest extends BaseTestCase {
 	 */
 	@ParameterizedTest
 	@MethodSource("topologicalSortGraphProvider")
-	void topologicalSort(List<Pair<Node, Node>> edges, String dependency, String expected) {
+	void topologicalSort(List<Pair<Node, Node>> edges, String dependency, String... expected) {
 		final DeuteriumGraph graph = new DeuteriumGraph();
 		for (Pair<Node, Node> edge : edges)
 			graph.putEdge(edge.getKey(), edge.getValue());
@@ -116,7 +125,10 @@ class DeuteriumGraphTest extends BaseTestCase {
 		for (Node node : sorted)
 			result.append(node.getName()).append(" ");
 		result.deleteCharAt(result.length() - 1); // remove trailing space
-		assertThat(result.toString(), equalTo(expected));
+
+		// The exact order is non-deterministic; there may be many valid topological sorts of the graph, so expected
+		// is just an array of possible ones.
+		assertThat(result.toString(), isIn(expected));
 	}
 
 	/**
@@ -138,6 +150,13 @@ class DeuteriumGraphTest extends BaseTestCase {
 		} catch (CycleException ex) {
 			assertThat(ex.getNodes(), hasItems(node("A"), node("B"), node("C"), node("D")));
 			assertThat(ex.getNodes(), not(hasItem(node("E"))));
+		}
+
+		// Stress test on highly connected graphs
+		final DeuteriumFile hellFile = generateTestFile();
+		for (DeuteriumGraph hellGraph : hellFile.getGraphs().values()) {
+			for (Node node : hellGraph.getNodes().values())
+				assertThrows(CycleException.class, () -> hellGraph.solveDependencies(node));
 		}
 	}
 }
