@@ -19,6 +19,8 @@
 
 package dev.crmyers.deuterium.data;
 
+import dev.crmyers.deuterium.data.exception.FileFormatException;
+
 import java.io.FileNotFoundException;
 import java.io.IOException;
 

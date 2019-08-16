@@ -22,6 +22,7 @@ package dev.crmyers.deuterium.data.protobuf;
 import com.google.common.graph.EndpointPair;
 import com.google.common.io.BaseEncoding;
 import dev.crmyers.deuterium.data.*;
+import dev.crmyers.deuterium.data.exception.FileFormatException;
 import lombok.extern.log4j.Log4j2;
 
 import java.io.*;

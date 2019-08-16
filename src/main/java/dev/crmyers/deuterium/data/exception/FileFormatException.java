@@ -17,40 +17,13 @@
  * along with Deuterium.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package dev.crmyers.deuterium.data;
-
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
-import java.util.UUID;
+package dev.crmyers.deuterium.data.exception;
 
 /**
- * Class to represent a single Deuterium node.
+ * Exception thrown when the file format is invalid
  */
-@Getter
-@Setter
-@AllArgsConstructor
-@NoArgsConstructor
-public class Node {
-	private UUID id;
-	private String name;
-	private String details;
-
-	/**
-	 * Construct a node with name only; details is left at nothing, ID is randomized
-	 * @param name Node name
-	 */
-	public Node(String name) {
-		this.name = name;
-		id = UUID.randomUUID();
-	}
-
-	@Override
-	public String toString() {
-//		return "Node(id=\"" + id + "\", name=\"" + name + "\", details=\"" + details + ")";
-		return name;
+public class FileFormatException extends RuntimeException {
+	public FileFormatException(String msg) {
+		super(msg);
 	}
 }
-

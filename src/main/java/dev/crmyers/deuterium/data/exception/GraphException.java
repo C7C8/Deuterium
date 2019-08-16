@@ -17,13 +17,26 @@
  * along with Deuterium.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package dev.crmyers.deuterium.data;
+package dev.crmyers.deuterium.data.exception;
+
+import dev.crmyers.deuterium.data.Node;
+import lombok.Getter;
+
+import java.util.Set;
 
 /**
- * Exception thrown when the file format is invalid
+ * Exception to represent graph exceptions
  */
-public class FileFormatException extends RuntimeException {
-	public FileFormatException(String msg) {
-		super(msg);
+public class GraphException extends RuntimeException {
+	@Getter
+	private Set<Node> nodes;
+
+	public GraphException(String message) {
+		super(message);
+	}
+
+	public GraphException(String message, Set<Node> nodes) {
+		super(message);
+		this.nodes = nodes;
 	}
 }

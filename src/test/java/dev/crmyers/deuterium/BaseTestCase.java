@@ -21,17 +21,17 @@ package dev.crmyers.deuterium;
 
 import dev.crmyers.deuterium.data.*;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.UUID;
+import java.util.*;
 
 public class BaseTestCase {
+
+	private static HashMap<String, Node> testNodes;
+
 	/**
 	 * Generate a test file for saving.
 	 * @return Deuterium file object with some test data inside.
 	 */
-	protected DeuteriumFile generateTestFile() {
+	protected static DeuteriumFile generateTestFile() {
 		// Make 5 different graphs
 		final HashMap<UUID, DeuteriumGraph> graphs = new HashMap<>();
 		for (int i = 0; i < 5; i++) {
@@ -65,5 +65,19 @@ public class BaseTestCase {
 		}
 
 		return new DeuteriumFile("Test file", "Test file description", graphs);
+	}
+
+	/**
+	 * Helper to get a generated test node, with name mappings from A-Z
+	 * @param name Node name (A-Z, case sensitive)
+	 * @return Test node
+	 */
+	protected static Node node(String name) {
+		if (testNodes == null) {
+			testNodes = new HashMap<>();
+			for (char letter = 'A'; letter <= 'Z'; letter++)
+				testNodes.put(String.valueOf(letter), new Node(String.valueOf(letter)));
+		}
+		return testNodes.get(name);
 	}
 }

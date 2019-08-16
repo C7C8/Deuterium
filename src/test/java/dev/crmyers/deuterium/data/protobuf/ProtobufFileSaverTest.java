@@ -23,7 +23,7 @@ import com.google.common.graph.EndpointPair;
 import dev.crmyers.deuterium.BaseTestCase;
 import dev.crmyers.deuterium.data.DeuteriumFile;
 import dev.crmyers.deuterium.data.DeuteriumGraph;
-import dev.crmyers.deuterium.data.FileFormatException;
+import dev.crmyers.deuterium.data.exception.FileFormatException;
 import dev.crmyers.deuterium.data.Node;
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.AfterAll;
@@ -80,7 +80,7 @@ class ProtobufFileSaverTest extends BaseTestCase {
 	 * Test successful save & retrieve operation
 	 */
 	@Test
-	void successfulSaveAndRetrievalTest() throws IOException {
+	void successfulSaveAndRetrieval() throws IOException {
 		final DeuteriumFile inputFile = generateTestFile();
 		fileSaver.saveFile("successfulSaveAndRetrieval.d2o", inputFile);
 		final DeuteriumFile loadedFile = fileSaver.loadFile("successfulSaveAndRetrieval.d2o");

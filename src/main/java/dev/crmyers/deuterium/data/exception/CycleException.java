@@ -17,40 +17,21 @@
  * along with Deuterium.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package dev.crmyers.deuterium.data;
+package dev.crmyers.deuterium.data.exception;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import dev.crmyers.deuterium.data.Node;
 
-import java.util.UUID;
+import java.util.Set;
 
 /**
- * Class to represent a single Deuterium node.
+ * Thrown if a cycle is detected in the graph
  */
-@Getter
-@Setter
-@AllArgsConstructor
-@NoArgsConstructor
-public class Node {
-	private UUID id;
-	private String name;
-	private String details;
-
-	/**
-	 * Construct a node with name only; details is left at nothing, ID is randomized
-	 * @param name Node name
-	 */
-	public Node(String name) {
-		this.name = name;
-		id = UUID.randomUUID();
+public class CycleException extends GraphException {
+	public CycleException(String message) {
+		super(message);
 	}
 
-	@Override
-	public String toString() {
-//		return "Node(id=\"" + id + "\", name=\"" + name + "\", details=\"" + details + ")";
-		return name;
+	public CycleException(String message, Set<Node> nodes) {
+		super(message, nodes);
 	}
 }
-

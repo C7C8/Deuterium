@@ -20,6 +20,7 @@
 package dev.crmyers.deuterium.data;
 
 import com.google.common.graph.*;
+import dev.crmyers.deuterium.data.exception.CycleException;
 import lombok.*;
 
 import java.util.*;
@@ -41,6 +42,29 @@ public class DeuteriumGraph implements MutableGraph<Node> {
 	@Getter(AccessLevel.NONE)
 	@Setter(AccessLevel.NONE)
 	MutableGraph<Node> graph = GraphBuilder.directed().build();
+
+	/**
+	 * Determines whether the given node has the given dependency
+	 * @param node Node to check on
+	 * @param dependency Potential dependency
+	 * @return Whether the node has dependency in its successor list
+	 */
+	public boolean dependsOn(final Node node, final Node dependency) {
+		return successors(node).contains(dependency);
+	}
+
+	/**
+	 * For a given dependent node, determine all dependencies and return a topological sort of them.
+	 * @return Topologically sorted set of node's dependencies, with dependent at the end. Note that this is NOT the
+	 * same as a topological sort of the graph!
+	 * @throws CycleException If a cycle is detected in the node's dependency tree; the exception will contain a set of
+	 * nodes involved in the cycle.
+	 */
+	public List<Node> solveDependencies(final Node dependent) throws CycleException {
+		return new ArrayList<>(Graphs.reachableNodes(graph, dependent));
+	}
+
+	// Methods from MutableGraph<Node> that delegate to the contained graph object
 
 	@Override
 	public Set<Node> nodes() {
