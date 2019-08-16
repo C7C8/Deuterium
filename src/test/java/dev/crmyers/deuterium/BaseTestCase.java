@@ -39,7 +39,7 @@ public class BaseTestCase {
 			final HashMap<UUID, Node> nodes = new HashMap<>();
 			for (int j = 1; j <= 10; j++) {
 				final UUID nodeId = UUID.randomUUID();
-				nodes.put(nodeId, new Node(nodeId, "Node " + j, "Details " + j , new HashMap<>()));
+				nodes.put(nodeId, new Node(nodeId, "Node " + j, "Details " + j , new HashMap<>(), new HashMap<>()));
 			}
 
 			// Link all nodes together and add some ADD history to them
@@ -48,7 +48,8 @@ public class BaseTestCase {
 				for (Node neighbor : nodes.values()) {
 					if (neighbor == node)
 						continue;
-					node.getNeighbors().put(neighbor.getId(), neighbor);
+					node.getDependencies().put(neighbor.getId(), neighbor);
+					neighbor.getDependents().put(node.getId(), node);
 				}
 
 				nodeHistories.add(new NodeHistory(UUID.randomUUID(), new Date(), node.getId(), Action.ADD, "Add"));

@@ -36,13 +36,13 @@ public class Node {
 	private UUID id;
 	private String name;
 	private String details;
-	Map<UUID, Node> neighbors = new HashMap<>();
+	Map<UUID, Node> dependencies = new HashMap<>();
+	Map<UUID, Node> dependents = new HashMap<>();
 
 	@Override
 	public String toString() {
-		String builder = "Node(id=\"" + id + "\", name=\"" + name + "\", details=\"" + details + "\", neighbors=" +
-				neighbors.keySet() + ")";
-		return builder;
+		return "Node(id=\"" + id + "\", name=\"" + name + "\", details=\"" + details + "\", dependencies=" +
+				dependencies.keySet() + ", dependents=" + dependents + ")";
 	}
 }
 

@@ -26,7 +26,7 @@ Configuration:
         - ref: Console_Appender
 
     Logger:
-      - name: edu.wpi.dyn.ravana
+      - name: dev.crmyers.deuterium
         level: debug
         AppenderRef:
           - ref: File_Appender

@@ -52,7 +52,12 @@ public class ProtobufFileSaver implements FileSaver {
 		// Sanity check: Does the file start with the right magic number?
 		final byte[] magic = input.readNBytes(4);
 		if (!(new String(magic)).equals("DEUT")) {
-			log.error("File {} not a Deuterium file, starts with {}", filename, magic);
+			// Convert magic string into hex printout for easier debugging
+			StringBuilder builder = new StringBuilder("[ ");
+			for (byte b : magic)
+				builder.append(String.format("0x%02x ", b));
+			builder.append("]");
+			log.error("File {} not a Deuterium file, starts with {}", filename, builder.toString());
 			throw new FileFormatException("Invalid file format");
 		}
 
@@ -64,34 +69,37 @@ public class ProtobufFileSaver implements FileSaver {
 		outputFile.setDescription(protoFile.getDescription());
 
 		int objectCount = 1;
-		HashMap<UUID, Graph> graphs = new HashMap<>();
+		final HashMap<UUID, Graph> graphs = new HashMap<>();
 		for (DeuteriumFormat.Graph protoGraph : protoFile.getGraphsMap().values()) {
 			// Basic graph metadata
 			objectCount++;
-			Graph graph = new Graph();
+			final Graph graph = new Graph();
 			graph.setId(UUID.fromString(protoGraph.getId()));
 			graph.setName(protoGraph.getName());
 			graph.setDescription(protoGraph.getDescription());
-			log.debug("Processing graph {}: {}", graph.getId(), graph.getName());
+			log.debug("Unpacking graph {}: {}", graph.getId(), graph.getName());
 
 			// Process nodes -- round 1, creation
 			HashMap<UUID, Node> nodeMap = new HashMap<>();
 			for (DeuteriumFormat.Node protoNode : protoGraph.getNodesMap().values()) {
 				objectCount++;
-				Node node = new Node();
+				final Node node = new Node();
 				node.setId(UUID.fromString(protoNode.getId()));
 				node.setName(protoNode.getName());
 				node.setDetails(protoNode.getDetails());
-				node.setNeighbors(new HashMap<>());
 				nodeMap.put(node.getId(), node);
-				log.debug("Processing node {}: {}", node.getId(), node.getName());
+				log.debug("Unpacking node {}: {}", node.getId(), node.getName());
 			}
 
 			// Process nodes -- round 2, link nodes to each other
 			for (DeuteriumFormat.Node protoNode : protoGraph.getNodesMap().values()) {
-				Map<UUID, Node> current = nodeMap.get(UUID.fromString(protoNode.getId())).getNeighbors();
-				for (String neighbor : protoNode.getNeighborsList())
-					current.put(UUID.fromString(neighbor), nodeMap.get(UUID.fromString(neighbor)));
+				final Node currentNode = nodeMap.get(UUID.fromString(protoNode.getId()));
+				final Map<UUID, Node> current = currentNode.getDependencies();
+				for (String neighborId : protoNode.getDependenciesList()) {
+					final Node neighborNode = nodeMap.get(UUID.fromString(neighborId));
+					current.put(neighborNode.getId(), neighborNode);
+					neighborNode.getDependents().put(currentNode.getId(), currentNode);
+				}
 			}
 			graph.setNodes(nodeMap);
 
@@ -99,13 +107,13 @@ public class ProtobufFileSaver implements FileSaver {
 			ArrayList<NodeHistory> nodeHistories = new ArrayList<>();
 			for (DeuteriumFormat.NodeHistory protoHistory : protoGraph.getHistoryList()) {
 				objectCount++;
-				NodeHistory history = new NodeHistory();
+				final NodeHistory history = new NodeHistory();
 				history.setId(UUID.fromString(protoHistory.getId()));
 				history.setDate(new Date(protoHistory.getDate()));
 				history.setEditId(UUID.fromString(protoHistory.getEditId()));
 				history.setAction(Action.values()[protoHistory.getAction().ordinal()]);
 				history.setChange(protoHistory.getChange());
-				log.debug("Processing history {} for node {} on {}", history.getId(), history.getEditId(), history.getDate());
+				log.debug("Unpacking history {} for node {} on {}", history.getId(), history.getEditId(), history.getDate());
 				nodeHistories.add(history);
 			}
 			graph.setHistory(nodeHistories);
@@ -138,7 +146,7 @@ public class ProtobufFileSaver implements FileSaver {
 		for (Graph inputGraph : data.getGraphs().values()) {
 			// Basic graph metadata
 			objectCount++;
-			log.debug("Processing graph {}: {}", inputGraph.getId(), inputGraph.getName());
+			log.debug("Packing graph {}: {}", inputGraph.getId(), inputGraph.getName());
 			final DeuteriumFormat.Graph.Builder protoGraph = DeuteriumFormat.Graph.newBuilder()
 					.setId(inputGraph.getId().toString())
 					.setName(inputGraph.getName())
@@ -148,15 +156,15 @@ public class ProtobufFileSaver implements FileSaver {
 			for (Node inputNode : inputGraph.getNodes().values()) {
 				// Basic node metadata
 				objectCount++;
-				log.debug("Processing node {}: {}", inputNode.getId(), inputNode.getName());
+				log.debug("Packing node {}: {}", inputNode.getId(), inputNode.getName());
 				final DeuteriumFormat.Node.Builder protoNode = DeuteriumFormat.Node.newBuilder()
 						.setId(inputNode.getId().toString())
 						.setName(inputNode.getName())
 						.setDetails(inputNode.getDetails());
 
-				// Copy over neighbors
-				for (UUID id : inputNode.getNeighbors().keySet())
-					protoNode.addNeighbors(id.toString());
+				// Copy over dependencies
+				for (UUID id : inputNode.getDependencies().keySet())
+					protoNode.addDependencies(id.toString());
 
 				protoGraph.putNodes(inputNode.getId().toString(), protoNode.build());
 			}
@@ -164,12 +172,12 @@ public class ProtobufFileSaver implements FileSaver {
 			// Convert histories
 			for (NodeHistory inputHistory : inputGraph.getHistory()) {
 				objectCount++;
-				log.debug("Processing history {} for node {} on {}", inputHistory.getId(), inputHistory.getEditId(), inputHistory.getDate());
-				DeuteriumFormat.NodeHistory.Builder protoHistory = DeuteriumFormat.NodeHistory.newBuilder()
+				log.debug("Packing history {} for node {} on {}", inputHistory.getId(), inputHistory.getEditId(), inputHistory.getDate());
+				final DeuteriumFormat.NodeHistory.Builder protoHistory = DeuteriumFormat.NodeHistory.newBuilder()
 						.setId(inputHistory.getId().toString())
 						.setDate(inputHistory.getDate().getTime())
 						.setEditId(inputHistory.getEditId().toString())
-						.setAction(DeuteriumFormat.NodeHistory.Action.valueOf(inputHistory.getAction().ordinal()))
+						.setAction(DeuteriumFormat.NodeHistory.Action.forNumber(inputHistory.getAction().ordinal()))
 						.setChange(inputHistory.getChange());
 				protoGraph.addHistory(protoHistory.build());
 			}
@@ -178,18 +186,18 @@ public class ProtobufFileSaver implements FileSaver {
 		}
 
 		// Build the file, write it out in binary, and compress it
-		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-		GZIPOutputStream compressor = new GZIPOutputStream(outputStream);
+		final ByteArrayOutputStream compressedData = new ByteArrayOutputStream();
+		final GZIPOutputStream compressor = new GZIPOutputStream(compressedData);
 		protoFile.build().writeDelimitedTo(compressor);
 		compressor.close();
-		log.info("Saved {} objects in {} bytes in {}ms", objectCount, outputStream.size(),
+		log.info("Saved {} objects in {} bytes in {}ms", objectCount, compressedData.size(),
 				System.currentTimeMillis() - startTime);
 
 		// Write to file! Prepend with magic number ("DEUT")
-		FileOutputStream outputFile = new FileOutputStream(filename);
+		final FileOutputStream outputFile = new FileOutputStream(filename);
 		outputFile.write("DEUT".getBytes(StandardCharsets.UTF_8));
-		outputFile.write(outputStream.toByteArray());
-		log.info("Wrote {} bytes to file {}", outputStream.size() + 4, filename);
+		outputFile.write(compressedData.toByteArray());
+		log.info("Wrote {} bytes to file {}", compressedData.size() + 4, filename);
 		outputFile.close();
 	}
 }

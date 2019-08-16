@@ -5,7 +5,7 @@ message Node {
     string id = 1 ;
     string name = 20;
     string details = 30;
-    repeated string neighbors = 40;
+    repeated string dependencies = 40;
 };
 
 message NodeHistory {

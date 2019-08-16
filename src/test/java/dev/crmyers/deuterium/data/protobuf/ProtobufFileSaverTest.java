@@ -61,14 +61,16 @@ class ProtobufFileSaverTest extends BaseTestCase {
 	 * Delete any .d2o files left over.
 	 */
 	@AfterAll
-	static void cleanup_global() {
+	static void cleanup_global() throws IOException {
 		File cwd = new File(System.getProperty("user.dir"));
 		File[] d2oFiles = cwd.listFiles();
 		if (d2oFiles == null)
 			return;
 		for (File file : d2oFiles) {
-			if (file.getName().endsWith(".d2o"))
-				file.delete();
+			if (file.getName().endsWith(".d2o")) {
+				if (!file.delete())
+					throw new IOException("Failed to delete test-generated file " + file.getName());
+			}
 		}
 	}
 
@@ -109,13 +111,14 @@ class ProtobufFileSaverTest extends BaseTestCase {
 
 				// Ensure that the loaded node's neighbor set contains all elements in the original set of nodes,
 				// *except* our current node's ID.
-				for (UUID neighbor : loadedGraph.getNodes().keySet()) {
-					if (neighbor.equals(loadedNode.getId())) {
-						assertThat(loadedNode.getNeighbors().keySet(), not(hasItem(neighbor)));
+				for (UUID neighborId : loadedGraph.getNodes().keySet()) {
+					if (neighborId.equals(loadedNode.getId())) {
+						assertThat(loadedNode.getDependencies().keySet(), not(hasItem(neighborId)));
 						continue;
 					}
 
-					assertThat(loadedNode.getNeighbors().keySet(), hasItem(neighbor));
+					assertThat(loadedNode.getDependencies().keySet(), hasItem(neighborId));
+					assertThat(loadedGraph.getNodes().get(neighborId).getDependents().keySet(), hasItem(loadedNode.getId()));
 				}
 			}
 
