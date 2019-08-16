@@ -19,27 +19,126 @@
 
 package dev.crmyers.deuterium.data;
 
-import com.google.common.graph.GraphBuilder;
-import com.google.common.graph.MutableGraph;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.google.common.graph.*;
+import lombok.*;
 
 import java.util.*;
 
 /**
- * Class to represent a Deuterium graph.
+ * Class to represent a Deuterium graph. Implements the MutableGraph interface but delegates to a Guava graph.
  */
+@SuppressWarnings({"UnstableApiUsage", "NullableProblems"})
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class DeuteriumGraph {
+public class DeuteriumGraph implements MutableGraph<Node> {
 	UUID id;
 	String name;
 	String description;
 	Map<UUID, Node> nodes = new HashMap<>();
 	List<NodeHistory> history = new ArrayList<>();
 
-	@SuppressWarnings("UnstableApiUsage")
+	@Getter(AccessLevel.NONE)
+	@Setter(AccessLevel.NONE)
 	MutableGraph<Node> graph = GraphBuilder.directed().build();
+
+	@Override
+	public Set<Node> nodes() {
+		return graph.nodes();
+	}
+
+	@Override
+	public Set<EndpointPair<Node>> edges() {
+		return graph.edges();
+	}
+
+	@Override
+	public boolean isDirected() {
+		return graph.isDirected();
+	}
+
+	@Override
+	public boolean allowsSelfLoops() {
+		return graph.allowsSelfLoops();
+	}
+
+	@Override
+	public ElementOrder<Node> nodeOrder() {
+		return graph.nodeOrder();
+	}
+
+	@Override
+	public Set<Node> adjacentNodes(Node node) {
+		return graph.adjacentNodes(node);
+	}
+
+	@Override
+	public Set<Node> predecessors(Node node) {
+		return graph.predecessors(node);
+	}
+
+	@Override
+	public Set<Node> successors(Node node) {
+		return graph.successors(node);
+	}
+
+	@Override
+	public Set<EndpointPair<Node>> incidentEdges(Node node) {
+		return graph.incidentEdges(node);
+	}
+
+	@Override
+	public int degree(Node node) {
+		return graph.degree(node);
+	}
+
+	@Override
+	public int inDegree(Node node) {
+		return graph.inDegree(node);
+	}
+
+	@Override
+	public int outDegree(Node node) {
+		return graph.outDegree(node);
+	}
+
+	@Override
+	public boolean hasEdgeConnecting(Node nodeU, Node nodeV) {
+		return graph.hasEdgeConnecting(nodeU, nodeV);
+	}
+
+	@Override
+	public boolean hasEdgeConnecting(EndpointPair<Node> endpoints) {
+		return graph.hasEdgeConnecting(endpoints);
+	}
+
+	@Override
+	public boolean addNode(Node node) {
+		return graph.addNode(node);
+	}
+
+	@Override
+	public boolean putEdge(Node nodeU, Node nodeV) {
+		return graph.putEdge(nodeU, nodeV);
+	}
+
+	@Override
+	public boolean putEdge(EndpointPair<Node> endpoints) {
+		return graph.putEdge(endpoints);
+	}
+
+	@Override
+	public boolean removeNode(Node node) {
+		return graph.removeNode(node);
+	}
+
+	@Override
+	public boolean removeEdge(Node nodeU, Node nodeV) {
+		return graph.removeEdge(nodeU, nodeV);
+	}
+
+	@Override
+	public boolean removeEdge(EndpointPair<Node> endpoints) {
+		return graph.removeEdge(endpoints);
+	}
 }

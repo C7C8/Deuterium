@@ -113,10 +113,10 @@ class ProtobufFileSaverTest extends BaseTestCase {
 			}
 
 			// Make sure the graph was copied over correctly
-			for (EndpointPair<Node> inputEdge : inputGraph.getGraph().edges()) {
+			for (EndpointPair<Node> inputEdge : inputGraph.edges()) {
 				final Node from = loadedGraph.getNodes().get(inputEdge.nodeU().getId());
 				final Node to = loadedGraph.getNodes().get(inputEdge.nodeV().getId());
-				assertTrue(loadedGraph.getGraph().hasEdgeConnecting(from, to));
+				assertTrue(loadedGraph.hasEdgeConnecting(from, to));
 			}
 
 			// Make sure all history was copied over correctly. Order DOES matter here.

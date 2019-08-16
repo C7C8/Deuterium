@@ -55,7 +55,7 @@ public class BaseTestCase {
 				for (Node neighbor : nodes.values()) {
 					if (node.getId().equals(neighbor.getId()))
 						continue;
-					graph.getGraph().putEdge(node, neighbor);
+					graph.putEdge(node, neighbor);
 				}
 
 				nodeHistories.add(new NodeHistory(UUID.randomUUID(), new Date(), node.getId(), Action.ADD, "Add"));

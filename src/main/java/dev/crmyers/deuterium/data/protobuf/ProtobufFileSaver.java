@@ -97,7 +97,7 @@ public class ProtobufFileSaver implements FileSaver {
 			// Process nodes -- round 2, link nodes to each other
 			for (DeuteriumFormat.Edge protoEdge : protoGraph.getEdgesList()) {
 				log.debug("Unpacking edge {} -> {}", protoEdge.getFrom(), protoEdge.getTo());
-				graph.getGraph().putEdge(nodeMap.get(UUID.fromString(protoEdge.getFrom())),
+				graph.putEdge(nodeMap.get(UUID.fromString(protoEdge.getFrom())),
 						nodeMap.get(UUID.fromString(protoEdge.getTo())));
 			}
 
@@ -175,7 +175,7 @@ public class ProtobufFileSaver implements FileSaver {
 			}
 
 			// Convert edges
-			for (EndpointPair<Node> inputEdge : inputGraph.getGraph().edges()) {
+			for (EndpointPair<Node> inputEdge : inputGraph.edges()) {
 				log.debug("Packing edge {} -> {}", inputEdge.nodeU().getId(), inputEdge.nodeV().getId());
 				protoGraph.addEdges(DeuteriumFormat.Edge.newBuilder()
 						.setFrom(inputEdge.nodeU().getId().toString())
