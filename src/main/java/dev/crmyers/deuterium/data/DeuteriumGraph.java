@@ -24,7 +24,6 @@ import dev.crmyers.deuterium.data.exception.CycleException;
 import lombok.*;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * Class to represent a Deuterium graph. Implements the MutableGraph interface but delegates to a Guava graph.
@@ -63,17 +62,16 @@ public class DeuteriumGraph implements MutableGraph<Node> {
 	 */
 	public List<Node> solveDependencies(final Node dependent) throws CycleException {
 		// Run cycle detection on a graph formed from only this node plus its successors
-		MutableGraph<Node> dependencyGraph = Graphs.copyOf(graph);
-		Set<Node> dependencies = Graphs.reachableNodes(graph, dependent);
-		for (Node node : graph.nodes().stream().filter(n -> !dependencies.contains(n)).collect(Collectors.toList()))
-			dependencyGraph.removeNode(node);
-		if (Graphs.hasCycle(dependencyGraph))
-			throw new CycleException("Cycle detected");
+		MutableGraph<Node> dependencyGraph = Graphs.inducedSubgraph(graph, Graphs.reachableNodes(graph, dependent));
+		Set<Node> cycleNodes = findCycleBranchedFrom(dependencyGraph, dependent);
+		if (!cycleNodes.isEmpty())
+			throw new CycleException("Cycle detected", cycleNodes);
 
 		Stack<Node> stack = new Stack<>();
 		Stack<Node> sorted = new Stack<>();
 		HashSet<Node> visited = new HashSet<>();
 
+		// Depth-first search
 		stack.push(dependent);
 		while (!stack.empty()) {
 			final Node top = stack.pop();
@@ -93,6 +91,47 @@ public class DeuteriumGraph implements MutableGraph<Node> {
 		while (!sorted.empty())
 			ret.add(sorted.pop());
 		return ret;
+	}
+
+	/**
+	 * Find a cycle in the graph that can be found by branching off the given node. Cycles do not necessarily have to
+	 * involve the given node, the cycle just has to be accessible from it. Ex. A-> B <-> C will return (B, C) when run
+	 * on A because the B/C cycle is accessible from A.
+	 * @param graph Graph.
+	 * @param node Node to search from.
+	 * @return Set containing nodes involved in the cycle; if no cycle exists, the set will be empty.
+	 */
+	private static Set<Node> findCycleBranchedFrom(final Graph<Node> graph, final Node node) {
+		Queue<Node> queue = new ArrayDeque<>();
+		Set<Node> visited = new HashSet<>();
+		visited.add(node);
+		queue.add(node);
+
+		// Breadth-first search
+		boolean start = true;
+		while (!queue.isEmpty()) {
+			Node v = queue.remove();
+			for (Node w : graph.successors(v)) {
+				// Found a cycle!
+				if (!start && node.equals(w)) // hack to make sure the algorithm works on the first iteration
+					return visited;
+
+				if (!visited.contains(w)) {
+					visited.add(w);
+					queue.add(w);
+				}
+				else {
+					// Something weird is going on, we've re-encountered a node, so somehow this node is involved in
+					// a cycle. Re-run the search from this node, but on a graph that contains only those nodes accessible
+					// from this one.
+					return findCycleBranchedFrom(Graphs.inducedSubgraph(graph, Graphs.reachableNodes(graph, w)), w);
+				}
+			}
+			start = false;
+		}
+
+		// No cycle found!
+		return Collections.emptySet();
 	}
 
 
