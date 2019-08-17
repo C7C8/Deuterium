@@ -67,18 +67,14 @@ public class DeuteriumGraph implements MutableGraph<Node> {
 		if (!cycleNodes.isEmpty())
 			throw new CycleException("Cycle detected", cycleNodes);
 
-		Stack<Node> stack = new Stack<>();
-		Stack<Node> sorted = new Stack<>();
-		HashSet<Node> visited = new HashSet<>();
+		final Stack<Node> stack = new Stack<>();
+		final LinkedHashSet<Node> visited = new LinkedHashSet<>();
 
 		// Depth-first search
 		stack.push(dependent);
 		while (!stack.empty()) {
 			final Node top = stack.pop();
-			if (!visited.contains(top)) {
-				sorted.push(top);
-				visited.add(top);
-			}
+			visited.add(top);
 
 			for (Node node : dependencyGraph.successors(top)) {
 				if (!visited.contains(node))
@@ -87,9 +83,8 @@ public class DeuteriumGraph implements MutableGraph<Node> {
 		}
 
 		// This DFS returns the nodes in inverse order; this reverses them.
-		ArrayList<Node> ret = new ArrayList<>(sorted.size());
-		while (!sorted.empty())
-			ret.add(sorted.pop());
+		final ArrayList<Node> ret = new ArrayList<>(visited);
+		Collections.reverse(ret);
 		return ret;
 	}
 
@@ -133,7 +128,6 @@ public class DeuteriumGraph implements MutableGraph<Node> {
 		// No cycle found!
 		return Collections.emptySet();
 	}
-
 
 	// Methods from MutableGraph<Node> that delegate to the contained graph object
 
