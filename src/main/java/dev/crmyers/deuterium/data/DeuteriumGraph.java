@@ -62,8 +62,8 @@ public class DeuteriumGraph implements MutableGraph<Node> {
 	 */
 	public List<Node> solveDependencies(final Node dependent) throws CycleException {
 		// Run cycle detection on a graph formed from only this node plus its successors
-		MutableGraph<Node> dependencyGraph = Graphs.inducedSubgraph(graph, Graphs.reachableNodes(graph, dependent));
-		Set<Node> cycleNodes = findCycleBranchedFrom(dependencyGraph, dependent);
+		final MutableGraph<Node> dependencyGraph = Graphs.inducedSubgraph(graph, Graphs.reachableNodes(graph, dependent));
+		final Set<Node> cycleNodes = findCycleBranchedFrom(dependencyGraph, dependent);
 		if (!cycleNodes.isEmpty())
 			throw new CycleException("Cycle detected", cycleNodes);
 
@@ -126,6 +126,17 @@ public class DeuteriumGraph implements MutableGraph<Node> {
 		}
 
 		// No cycle found!
+		return Collections.emptySet();
+	}
+
+	/**
+	 * Find all nodes reachable by this node that cannot be accessed by any other. That is, find all nodes that, if you
+	 * were to remove the given node, would form one or more disjoint subgraphs of the original graph. Think of this
+	 * function as a way to find choke points.
+	 * @param node Node to start search from
+	 * @return Set of nodes exclusively dependent on the given node. If there are none, the set will be empty.
+	 */
+	public Set<Node> findAllExclusivelyDependentOn(final Node node) {
 		return Collections.emptySet();
 	}
 

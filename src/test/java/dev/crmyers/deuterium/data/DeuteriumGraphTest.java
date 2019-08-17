@@ -27,11 +27,14 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsIn.isIn;
+import static org.hamcrest.collection.IsIn.isOneOf;
 import static org.hamcrest.core.IsCollectionContaining.hasItem;
 import static org.hamcrest.core.IsCollectionContaining.hasItems;
 import static org.hamcrest.core.IsEqual.equalTo;
@@ -104,14 +107,9 @@ class DeuteriumGraphTest extends BaseTestCase {
 	void topologicalSort(DeuteriumGraph graph, String dependency, String... expected) {
 		final List<Node> sorted = graph.solveDependencies(node(dependency));
 
-		// Concatenate node names into space-separated string
-		StringBuilder result = new StringBuilder();
-		for (Node node : sorted)
-			result.append(node.getName());
-
 		// The exact order is non-deterministic; there may be many valid topological sorts of the graph, so expected
 		// is just an array of possible ones.
-		assertThat(result.toString(), isIn(expected));
+		assertThat(sorted.stream().map(Node::toString).reduce("", (a, b) -> a + b), isIn(expected));
 	}
 
 	/**
@@ -161,5 +159,62 @@ class DeuteriumGraphTest extends BaseTestCase {
 			assertThat(ex.getNodes().size(), equalTo(2));
 			assertThat(ex.getNodes(), hasItems(node("G"), node("H")));
 		}
+	}
+
+	static Stream<Arguments> findAllExclusivelyDependentOnProvider() {
+		/* Graph 1:
+			A -> B -> C, D
+		    |-> F
+
+		*/
+		DeuteriumGraph graph1 = makeGraph("A", "B",
+				"A", "F",
+				"B", "C",
+				"B", "D");
+
+		/*
+		Graph 2:
+			 F -> A <- E
+			\/		  \/
+			 C -> D -> B -> G -> H, I
+
+		 */
+		DeuteriumGraph graph2 = makeGraph("F", "A",
+				"F", "C",
+				"E", "B",
+				"E", "A",
+				"C", "D",
+				"D", "B",
+				"B", "G",
+				"G", "H",
+				"G", "I");
+		return Stream.of(
+
+				// Graph 1 -- simple tree
+				Arguments.of(graph1, "B", "CD"),
+				Arguments.of(graph1, "A", "BFCD"),
+				Arguments.of(graph1, "C", ""),
+				Arguments.of(graph1, "D", ""),
+				Arguments.of(graph1, "F", ""),
+
+				// Graph 2 -- more complications
+				Arguments.of(graph2, "F", "CD"),
+				Arguments.of(graph2, "A", ""),
+				Arguments.of(graph2, "E", ""),
+				Arguments.of(graph2, "C", "D"),
+				Arguments.of(graph2, "B", "GHI"),
+				Arguments.of(graph2, "G", "HI"),
+				Arguments.of(graph2, "H", ""),
+				Arguments.of(graph2, "I", "")
+		);
+	}
+	/**
+	 * Functionality of findAllExclusivelyDependentOn
+	 */
+	@ParameterizedTest
+	@MethodSource("findAllExclusivelyDependentOnProvider")
+	void findAllExclusivelyDependentOn(DeuteriumGraph graph, String node, String expected) {
+		final Set<Node> results = graph.findAllExclusivelyDependentOn(node(node));
+		assertThat(results, isOneOf(expected.chars().mapToObj(n -> node(String.valueOf((char) n))).collect(Collectors.toSet())));
 	}
 }
