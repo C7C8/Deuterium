@@ -80,4 +80,19 @@ public class BaseTestCase {
 		}
 		return testNodes.get(name);
 	}
+
+	/**
+	 * Helper to create a graph from a list of edges
+	 * @param edges Letters that, when paired, form edges
+	 * @return Graph constructed from input edges
+	 */
+	protected static DeuteriumGraph makeGraph(String... edges) {
+		final DeuteriumGraph graph = new DeuteriumGraph();
+		for (int i = 0; i < edges.length;) {
+			final Node from = node(edges[i++]);
+			final Node to = node(edges[i++]);
+			graph.putEdge(from, to);
+		}
+		return graph;
+	}
 }

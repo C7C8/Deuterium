@@ -21,13 +21,11 @@ package dev.crmyers.deuterium.data;
 
 import dev.crmyers.deuterium.BaseTestCase;
 import dev.crmyers.deuterium.data.exception.CycleException;
-import javafx.util.Pair;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -62,18 +60,6 @@ class DeuteriumGraphTest extends BaseTestCase {
 	}
 
 	/**
-	 * Helper to generate a list of edges
-	 * @param edges Array of letters that, when paired, form edges
-	 * @return A list of node pairs (edges)
-	 */
-	private static List<Pair<Node, Node>> makeEdges(String... edges) {
-		final ArrayList<Pair<Node, Node>> ret = new ArrayList<>();
-		for (int i = 0; i < edges.length;)
-			ret.add(new Pair<>(node(edges[i++]), node(edges[i++])));
-		return ret;
-	}
-
-	/**
 	 *  Stupid helper so I don't have to do new String[] {...} for every graph solution
 	 * @param solutions Solutions list
 	 * @return The exact same list. JUnit, you suck.
@@ -93,17 +79,17 @@ class DeuteriumGraphTest extends BaseTestCase {
 			\/		  \/
 			 C -> D -> B
 		 */
-		List<Pair<Node, Node>> graph1 = makeEdges("F", "A",
-												  "F", "C",
-												  "E", "B",
-												  "E", "A",
-												  "C", "D",
-												  "D", "B");
+		DeuteriumGraph graph1 = makeGraph("F", "A",
+				"F", "C",
+				"E", "B",
+				"E", "A",
+				"C", "D",
+				"D", "B");
 		return Stream.of(
-				Arguments.of(graph1, "F", makeSolutions("B D C A F", "A B D C F")),
-				Arguments.of(graph1, "C", makeSolutions("B D C")),
-				Arguments.of(graph1, "E", makeSolutions("B A E", "A B E")),
-				Arguments.of(graph1, "D", makeSolutions("B D")),
+				Arguments.of(graph1, "F", makeSolutions("BDCAF", "ABDCF")),
+				Arguments.of(graph1, "C", makeSolutions("BDC")),
+				Arguments.of(graph1, "E", makeSolutions("BAE", "ABE")),
+				Arguments.of(graph1, "D", makeSolutions("BD")),
 				Arguments.of(graph1, "B", makeSolutions("B")),
 				Arguments.of(graph1, "A", makeSolutions("A"))
 		);
@@ -114,17 +100,13 @@ class DeuteriumGraphTest extends BaseTestCase {
 	 */
 	@ParameterizedTest
 	@MethodSource("topologicalSortGraphProvider")
-	void topologicalSort(List<Pair<Node, Node>> edges, String dependency, String... expected) {
-		final DeuteriumGraph graph = new DeuteriumGraph();
-		for (Pair<Node, Node> edge : edges)
-			graph.putEdge(edge.getKey(), edge.getValue());
+	void topologicalSort(DeuteriumGraph graph, String dependency, String... expected) {
 		final List<Node> sorted = graph.solveDependencies(node(dependency));
 
 		// Concatenate node names into space-separated string
 		StringBuilder result = new StringBuilder();
 		for (Node node : sorted)
-			result.append(node.getName()).append(" ");
-		result.deleteCharAt(result.length() - 1); // remove trailing space
+			result.append(node.getName());
 
 		// The exact order is non-deterministic; there may be many valid topological sorts of the graph, so expected
 		// is just an array of possible ones.
@@ -136,14 +118,12 @@ class DeuteriumGraphTest extends BaseTestCase {
 	 */
 	@Test
 	void topologicalSortDetectCycle() {
-		final DeuteriumGraph graph = new DeuteriumGraph();
-		// Four nodes in a cycle with one unrelated node hanging off to the side
-		graph.putEdge(node("A"), node("B"));
-		graph.putEdge(node("B"), node("C"));
-		graph.putEdge(node("C"), node("D"));
-		graph.putEdge(node("D"), node("A"));
-		graph.putEdge(node("E"), node("A"));
-
+		// Test 1: Four nodes in a cycle with one unrelated node hanging off to the side
+		DeuteriumGraph graph = makeGraph("A", "B",
+				"B", "C",
+				"C", "D",
+				"D", "A",
+				"E", "A");
 		try {
 			graph.solveDependencies(node("A"));
 			fail("Graph did not detect cycle");
@@ -152,11 +132,12 @@ class DeuteriumGraphTest extends BaseTestCase {
 			assertThat(ex.getNodes(), not(hasItem(node("E"))));
 		}
 
-		// Stress test on highly connected graphs
-		final DeuteriumFile hellFile = generateTestFile();
-		for (DeuteriumGraph hellGraph : hellFile.getGraphs().values()) {
-			for (Node node : hellGraph.getNodes().values())
-				assertThrows(CycleException.class, () -> hellGraph.solveDependencies(node));
-		}
+		/* Test 2: Graph 1 configuration from provider tests, but with a node hanging off of E that's in a cycle with
+		another node.
+		Graph layout:
+			 F -> A <- E -> G <-> H
+			\/		  \/
+			 C -> D -> B
+		 */
 	}
 }
