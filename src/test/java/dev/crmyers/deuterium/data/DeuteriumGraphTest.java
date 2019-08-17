@@ -34,6 +34,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsIn.isIn;
 import static org.hamcrest.core.IsCollectionContaining.hasItem;
 import static org.hamcrest.core.IsCollectionContaining.hasItems;
+import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.jupiter.api.Assertions.*;
 
 class DeuteriumGraphTest extends BaseTestCase {
@@ -126,7 +127,7 @@ class DeuteriumGraphTest extends BaseTestCase {
 				"E", "A");
 		try {
 			graph.solveDependencies(node("A"));
-			fail("Graph did not detect cycle");
+			fail("Graph did not detect cycle 1");
 		} catch (CycleException ex) {
 			assertThat(ex.getNodes(), hasItems(node("A"), node("B"), node("C"), node("D")));
 			assertThat(ex.getNodes(), not(hasItem(node("E"))));
@@ -139,5 +140,26 @@ class DeuteriumGraphTest extends BaseTestCase {
 			\/		  \/
 			 C -> D -> B
 		 */
+		graph = makeGraph("F", "A",
+				"F", "C",
+				"E", "B",
+				"E", "A",
+				"C", "D",
+				"D", "B",
+				"E", "G",
+				"G", "H",
+				"H", "G");
+
+		// Solving for F should work since F won't hit G
+		graph.solveDependencies(node("F"));
+
+		// Solving for E should throw an exception that contains only G and H, as those are the nodes involved in the cycle
+		try {
+			graph.solveDependencies(node("E"));
+			fail("Graph did not detect cycle 2");
+		} catch (CycleException ex) {
+			assertThat(ex.getNodes().size(), equalTo(2));
+			assertThat(ex.getNodes(), hasItems(node("G"), node("H")));
+		}
 	}
 }

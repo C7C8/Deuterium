@@ -19,14 +19,12 @@
 
 package dev.crmyers.deuterium.data;
 
-import com.google.common.graph.ElementOrder;
-import com.google.common.graph.EndpointPair;
-import com.google.common.graph.GraphBuilder;
-import com.google.common.graph.MutableGraph;
+import com.google.common.graph.*;
 import dev.crmyers.deuterium.data.exception.CycleException;
 import lombok.*;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Class to represent a Deuterium graph. Implements the MutableGraph interface but delegates to a Guava graph.
@@ -64,12 +62,19 @@ public class DeuteriumGraph implements MutableGraph<Node> {
 	 * nodes involved in the cycle.
 	 */
 	public List<Node> solveDependencies(final Node dependent) throws CycleException {
+		// Run cycle detection on a graph formed from only this node plus its successors
+		MutableGraph<Node> dependencyGraph = Graphs.copyOf(graph);
+		Set<Node> dependencies = Graphs.reachableNodes(graph, dependent);
+		for (Node node : graph.nodes().stream().filter(n -> !dependencies.contains(n)).collect(Collectors.toList()))
+			dependencyGraph.removeNode(node);
+		if (Graphs.hasCycle(dependencyGraph))
+			throw new CycleException("Cycle detected");
+
 		Stack<Node> stack = new Stack<>();
 		Stack<Node> sorted = new Stack<>();
 		HashSet<Node> visited = new HashSet<>();
 
 		stack.push(dependent);
-
 		while (!stack.empty()) {
 			final Node top = stack.pop();
 			if (!visited.contains(top)) {
@@ -77,10 +82,7 @@ public class DeuteriumGraph implements MutableGraph<Node> {
 				visited.add(top);
 			}
 
-			for (Node node : graph.successors(top)) {
-				// TODO verify this works properly
-				if (node.equals(dependent))
-					throw new CycleException("Cycle detected", visited);
+			for (Node node : dependencyGraph.successors(top)) {
 				if (!visited.contains(node))
 					stack.push(node);
 			}
@@ -92,6 +94,7 @@ public class DeuteriumGraph implements MutableGraph<Node> {
 			ret.add(sorted.pop());
 		return ret;
 	}
+
 
 	// Methods from MutableGraph<Node> that delegate to the contained graph object
 
