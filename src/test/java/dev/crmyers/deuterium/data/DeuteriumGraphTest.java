@@ -34,7 +34,6 @@ import java.util.stream.Stream;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsIn.isIn;
-import static org.hamcrest.collection.IsIn.isOneOf;
 import static org.hamcrest.core.IsCollectionContaining.hasItem;
 import static org.hamcrest.core.IsCollectionContaining.hasItems;
 import static org.hamcrest.core.IsEqual.equalTo;
@@ -167,7 +166,7 @@ class DeuteriumGraphTest extends BaseTestCase {
 		    |-> F
 
 		*/
-		DeuteriumGraph graph1 = makeGraph("A", "B",
+		final DeuteriumGraph graph1 = makeGraph("A", "B",
 				"A", "F",
 				"B", "C",
 				"B", "D");
@@ -179,7 +178,7 @@ class DeuteriumGraphTest extends BaseTestCase {
 			 C -> D -> B -> G -> H, I
 
 		 */
-		DeuteriumGraph graph2 = makeGraph("F", "A",
+		final DeuteriumGraph graph2 = makeGraph("F", "A",
 				"F", "C",
 				"E", "B",
 				"E", "A",
@@ -215,6 +214,6 @@ class DeuteriumGraphTest extends BaseTestCase {
 	@MethodSource("findAllExclusivelyDependentOnProvider")
 	void findAllExclusivelyDependentOn(DeuteriumGraph graph, String node, String expected) {
 		final Set<Node> results = graph.findAllExclusivelyDependentOn(node(node));
-		assertThat(results, isOneOf(expected.chars().mapToObj(n -> node(String.valueOf((char) n))).collect(Collectors.toSet())));
+		assertThat(results, equalTo(expected.chars().mapToObj(n -> node(String.valueOf((char) n))).collect(Collectors.toSet())));
 	}
 }

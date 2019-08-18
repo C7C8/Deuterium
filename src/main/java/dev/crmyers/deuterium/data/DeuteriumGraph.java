@@ -19,6 +19,7 @@
 
 package dev.crmyers.deuterium.data;
 
+import com.google.common.collect.Sets;
 import com.google.common.graph.*;
 import dev.crmyers.deuterium.data.exception.CycleException;
 import lombok.*;
@@ -137,7 +138,20 @@ public class DeuteriumGraph implements MutableGraph<Node> {
 	 * @return Set of nodes exclusively dependent on the given node. If there are none, the set will be empty.
 	 */
 	public Set<Node> findAllExclusivelyDependentOn(final Node node) {
-		return Collections.emptySet();
+		// Obtain the topologically-sorted dependency list for this node and iterate through it; anything that has a
+		// dependency not already listed in the dependency list is removed. This has the effect of pruning any direct
+		// children of it, too, since their parent will have just been removed.
+		List<Node> dependencies = solveDependencies(node);
+		Collections.reverse(dependencies);
+		HashSet<Node> ret = new HashSet<>(dependencies);
+		for (Node successor : dependencies) {
+			if (successor.equals(node))
+				continue;
+			if (!Sets.difference(graph.predecessors(successor), ret).isEmpty())
+				ret.remove(successor);
+		}
+		ret.remove(node);
+		return ret;
 	}
 
 	// Methods from MutableGraph<Node> that delegate to the contained graph object
