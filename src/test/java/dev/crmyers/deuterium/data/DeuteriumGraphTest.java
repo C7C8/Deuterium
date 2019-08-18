@@ -21,6 +21,7 @@ package dev.crmyers.deuterium.data;
 
 import dev.crmyers.deuterium.BaseTestCase;
 import dev.crmyers.deuterium.data.exception.CycleException;
+import dev.crmyers.deuterium.data.exception.DependencyException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -40,6 +41,47 @@ import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.jupiter.api.Assertions.*;
 
 class DeuteriumGraphTest extends BaseTestCase {
+
+	/* Graph 1:
+		A -> B -> C, D
+		|-> F
+
+	*/
+	private static final DeuteriumGraph graph1 = makeGraph("A", "B",
+			"A", "F",
+			"B", "C",
+			"B", "D");
+
+	/*
+	Graph 2:
+		 F -> A <- E
+		\/		  \/
+		 C -> D -> B -> G -> H, I
+
+	 */
+	private static final DeuteriumGraph graph2 = makeGraph("F", "A",
+			"F", "C",
+			"E", "B",
+			"E", "A",
+			"C", "D",
+			"D", "B",
+			"B", "G",
+			"G", "H",
+			"G", "I");
+
+	/*
+	Graph 3:
+		  /> B \ -> E
+		A		-> D -> F
+		  \> C /
+	 */
+	private static final DeuteriumGraph graph3 = makeGraph("A", "B",
+			"A", "C",
+			"B", "E",
+			"B", "D",
+			"C", "D",
+			"D", "F"
+	);
 
 	/**
 	 * Make sure node dependency works
@@ -161,49 +203,7 @@ class DeuteriumGraphTest extends BaseTestCase {
 	}
 
 	static Stream<Arguments> findAllExclusivelyDependentOnProvider() {
-		/* Graph 1:
-			A -> B -> C, D
-		    |-> F
-
-		*/
-		final DeuteriumGraph graph1 = makeGraph("A", "B",
-				"A", "F",
-				"B", "C",
-				"B", "D");
-
-		/*
-		Graph 2:
-			 F -> A <- E
-			\/		  \/
-			 C -> D -> B -> G -> H, I
-
-		 */
-		final DeuteriumGraph graph2 = makeGraph("F", "A",
-				"F", "C",
-				"E", "B",
-				"E", "A",
-				"C", "D",
-				"D", "B",
-				"B", "G",
-				"G", "H",
-				"G", "I");
-
-		/*
-		Graph 3:
-			  /> B \ -> E
-			A		-> D -> F
-			  \> C /
-		 */
-		final DeuteriumGraph graph3 = makeGraph("A", "B",
-				"A", "C",
-				"B", "E",
-				"B", "D",
-				"C", "D",
-				"D", "F"
-		);
-
 		return Stream.of(
-
 				// Graph 1 -- simple tree
 				Arguments.of(graph1, "B", "CD"),
 				Arguments.of(graph1, "A", "BFCD"),
@@ -230,6 +230,7 @@ class DeuteriumGraphTest extends BaseTestCase {
 				Arguments.of(graph3, "F", "")
 		);
 	}
+
 	/**
 	 * Functionality of findAllExclusivelyDependentOn
 	 */
@@ -238,5 +239,40 @@ class DeuteriumGraphTest extends BaseTestCase {
 	void findAllExclusivelyDependentOn(DeuteriumGraph graph, String node, String expected) {
 		final Set<Node> results = graph.findAllExclusivelyDependentOn(node(node));
 		assertThat(results, equalTo(expected.chars().mapToObj(n -> node(String.valueOf((char) n))).collect(Collectors.toSet())));
+	}
+
+	/**
+	 * Provider for shortest path test.
+	 * @return Test cases.
+	 */
+	static Stream<Arguments> shortestPathProvider() {
+		return Stream.of(
+				// Simple tree formation
+				Arguments.of(graph1, "A", "D", "ABD"),
+				Arguments.of(graph1, "B", "C", "BC"),
+
+				// Longer graph with some directionality
+				Arguments.of(graph2, "F", "I", "FCDBGI"),
+				Arguments.of(graph2, "E", "I", "EBGI")
+		);
+	}
+
+	@ParameterizedTest
+	@MethodSource("shortestPathProvider")
+	void shortestPath(DeuteriumGraph graph, String from, String to, String expected) {
+		final List<Node> results = graph.shortestPath(node(from), node(to));
+		assertThat(results, equalTo(expected.chars().mapToObj(n -> node(String.valueOf((char) n))).collect(Collectors.toList())));
+	}
+
+	@Test
+	void shortestPathExceptionCases() {
+		// Graph 1: Can't find a path from F to D because they're on different branches of the tree
+		assertThrows(DependencyException.class, () -> graph1.shortestPath(node("F"), node("D")));
+
+		// Graph 2: Can't find a path from E to D because it requires going upstream (different "branches")
+		assertThrows(DependencyException.class, () -> graph2.shortestPath(node("E"), node("D")));
+
+		// Graph 3: Can't find a path from E to F because it requires going upstream
+		assertThrows(DependencyException.class, () -> graph3.shortestPath(node("E"), node("F")));
 	}
 }

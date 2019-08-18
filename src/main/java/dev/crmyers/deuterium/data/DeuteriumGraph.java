@@ -22,6 +22,7 @@ package dev.crmyers.deuterium.data;
 import com.google.common.collect.Sets;
 import com.google.common.graph.*;
 import dev.crmyers.deuterium.data.exception.CycleException;
+import dev.crmyers.deuterium.data.exception.DependencyException;
 import lombok.*;
 
 import java.util.*;
@@ -141,9 +142,9 @@ public class DeuteriumGraph implements MutableGraph<Node> {
 		// Obtain the topologically-sorted dependency list for this node and iterate through it; anything that has a
 		// dependency not already listed in the dependency list is removed. This has the effect of pruning any direct
 		// children of it, too, since their parent will have just been removed.
-		List<Node> dependencies = solveDependencies(node);
+		final List<Node> dependencies = solveDependencies(node);
 		Collections.reverse(dependencies);
-		HashSet<Node> ret = new HashSet<>(dependencies);
+		final HashSet<Node> ret = new HashSet<>(dependencies);
 		for (Node successor : dependencies) {
 			if (successor.equals(node))
 				continue;
@@ -154,8 +155,56 @@ public class DeuteriumGraph implements MutableGraph<Node> {
 		return ret;
 	}
 
-	// Methods from MutableGraph<Node> that delegate to the contained graph object
+	/**
+	 * Find the shortest path from one node to another.
+	 * @param from Start node
+	 * @param to End node
+	 * @return Ordered list of nodes to traverse, starting with from and ending with to.
+	 * @throws DependencyException Thrown if no path can be found.
+	 */
+	public List<Node> shortestPath(final Node from, final Node to) throws DependencyException {
+		Queue<Node> queue = new ArrayDeque<>();
+		Set<Node> visited = new HashSet<>();
+		HashMap<Node, Node> parents = new HashMap<>();
+		visited.add(from);
+		queue.add(from);
 
+		while (!queue.isEmpty()) {
+			Node v = queue.remove();
+			boolean finished = false;
+			for (Node w : graph.successors(v)) {
+				// Found "to"!
+				if (w.equals(to)) {
+					finished = true;
+					parents.put(to, w);
+					parents.put(w, v);
+					break;
+				}
+				if (!visited.contains(w)) {
+					visited.add(w);
+					queue.add(w);
+					parents.put(w, v);
+				}
+			}
+			if (finished)
+				break;
+		}
+
+		if (!parents.containsKey(to))
+				throw new DependencyException("No path to node");
+
+		ArrayList<Node> ret = new ArrayList<>();
+		Node current = to;
+		while (parents.containsKey(current)) {
+			ret.add(current);
+			current = parents.get(current);
+		}
+		ret.add(from);
+		Collections.reverse(ret);
+		return ret;
+	}
+
+	// Methods from MutableGraph<Node> that delegate to the contained graph object
 	@Override
 	public Set<Node> nodes() {
 		return graph.nodes();
