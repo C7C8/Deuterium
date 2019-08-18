@@ -187,6 +187,21 @@ class DeuteriumGraphTest extends BaseTestCase {
 				"B", "G",
 				"G", "H",
 				"G", "I");
+
+		/*
+		Graph 3:
+			  /> B \ -> E
+			A		-> D -> F
+			  \> C /
+		 */
+		final DeuteriumGraph graph3 = makeGraph("A", "B",
+				"A", "C",
+				"B", "E",
+				"B", "D",
+				"C", "D",
+				"D", "F"
+		);
+
 		return Stream.of(
 
 				// Graph 1 -- simple tree
@@ -204,7 +219,15 @@ class DeuteriumGraphTest extends BaseTestCase {
 				Arguments.of(graph2, "B", "GHI"),
 				Arguments.of(graph2, "G", "HI"),
 				Arguments.of(graph2, "H", ""),
-				Arguments.of(graph2, "I", "")
+				Arguments.of(graph2, "I", ""),
+
+				// Graph 3 -- diamond formation
+				Arguments.of(graph3, "A", "BCDEF"),
+				Arguments.of(graph3, "B", "E"),
+				Arguments.of(graph3, "C", ""),
+				Arguments.of(graph3, "D", "F"),
+				Arguments.of(graph3, "E", ""),
+				Arguments.of(graph3, "F", "")
 		);
 	}
 	/**
