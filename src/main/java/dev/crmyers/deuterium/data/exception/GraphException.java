@@ -17,10 +17,26 @@
  * along with Deuterium.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package edu.wpi.dyn.ravana;
+package dev.crmyers.deuterium.data.exception;
 
-import java.net.URL;
+import dev.crmyers.deuterium.data.Node;
+import lombok.Getter;
 
-public class FileLoader {
-	public static final URL fxml_main = FileLoader.class.getResource("/fxml/main.fxml");
+import java.util.Set;
+
+/**
+ * Exception to represent graph exceptions
+ */
+public class GraphException extends RuntimeException {
+	@Getter
+	private Set<Node> nodes;
+
+	public GraphException(String message) {
+		super(message);
+	}
+
+	public GraphException(String message, Set<Node> nodes) {
+		super(message);
+		this.nodes = nodes;
+	}
 }
