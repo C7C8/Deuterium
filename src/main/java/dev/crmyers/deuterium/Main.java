@@ -17,7 +17,7 @@
  * along with Deuterium.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package edu.wpi.dyn.ravana;
+package dev.crmyers.deuterium;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
