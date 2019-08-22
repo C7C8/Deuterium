@@ -12,6 +12,7 @@ addons:
   apt:
     packages:
       - xvfb
+      - protobuf-compiler
 
 install:
   - export DISPLAY='99.0'
