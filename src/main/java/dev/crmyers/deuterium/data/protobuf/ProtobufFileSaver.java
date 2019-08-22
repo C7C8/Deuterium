@@ -43,21 +43,34 @@ public class ProtobufFileSaver implements FileSaver {
 	 *
 	 * @param filename Relative filename.
 	 * @return Loaded data, already linked up and ready to go (i.e. graphs should be traversable)
-	 * @throws FileFormatException When file format to load is invalid
+	 * @throws FileFormatException   When file format to load is invalid
 	 * @throws FileNotFoundException Thrown if the file cannot be loaded
 	 * @throws IOException           Generic IO exception (e.g. invalid file)
 	 */
 	@Override
-	public DeuteriumFile loadFile(String filename) throws FileFormatException, FileNotFoundException, IOException {
+	public DeuteriumFile loadFile(String filename) throws FileNotFoundException, IOException {
+		return loadFile(new FileInputStream(filename));
+	}
+
+	/**
+	 * Load a Deuterium save file and return it in the form of data.
+	 *
+	 * @param file InputStream to read from
+	 * @return Loaded data, already linked up and ready to go (i.e. graphs should be traversable)
+	 * @throws FileFormatException   When file format to load is invalid
+	 * @throws FileNotFoundException Thrown if the file cannot be loaded
+	 * @throws IOException           Generic IO exception (e.g. invalid file)
+	 */
+	@Override
+	public DeuteriumFile loadFile(InputStream file) throws FileFormatException, FileNotFoundException, IOException {
 		final long startTime = System.currentTimeMillis();
-		FileInputStream input = new FileInputStream(filename);
-		log.info("Loading objects from file {}", filename);
+		log.info("Loading objects from file {}", file);
 
 		// Sanity check: Does the file start with the right magic number?
-		final byte[] magic = input.readNBytes(4);
+		final byte[] magic = file.readNBytes(4);
 		if (!(new String(magic)).equals("DEUT")) {
 			// Convert magic string into hex printout for easier debugging
-			log.error("File {} not a Deuterium file, starts with 0x{} (expected 0x{})", filename,
+			log.error("File {} not a Deuterium file, starts with 0x{} (expected 0x{})", file,
 					BaseEncoding.base16().lowerCase().encode(magic),
 					BaseEncoding.base16().lowerCase().encode("DEUT".getBytes()));
 			throw new FileFormatException("Invalid file format");
@@ -65,7 +78,7 @@ public class ProtobufFileSaver implements FileSaver {
 
 		// Unzip the input file (starting from the previous offset) and process basic file metadata
 		DeuteriumFormat.DeuteriumFile protoFile = DeuteriumFormat.DeuteriumFile
-				.parseDelimitedFrom(new GZIPInputStream(input));
+				.parseDelimitedFrom(new GZIPInputStream(file));
 		DeuteriumFile outputFile = new DeuteriumFile();
 		outputFile.setName(protoFile.getName());
 		outputFile.setDescription(protoFile.getDescription());
@@ -133,10 +146,23 @@ public class ProtobufFileSaver implements FileSaver {
 	 */
 	@Override
 	public void saveFile(String filename, DeuteriumFile data) throws FileNotFoundException, IOException {
+		saveFile(new FileOutputStream(filename), data);
+	}
+
+	/**
+	 * Save a Deuterium data object to a new file.
+	 *
+	 * @param file OutputStream to write to
+	 * @param data Data to save.
+	 * @throws FileNotFoundException Thrown if the file cannot be saved because the containing folder does not exist
+	 * @throws IOException           Generic IO exception (e.g. out of space)
+	 */
+	@Override
+	public void saveFile(OutputStream file, DeuteriumFile data) throws FileNotFoundException, IOException {
 		// Map a DeuteriumFile object to a Protobuffer-style DeuteriumFile
 		int objectCount = 1;
 		final long startTime = System.currentTimeMillis();
-		log.info("Beginning save of {} graphs to file {}", data.getGraphs().size(), filename);
+		log.info("Beginning save of {} graphs", data.getGraphs().size());
 		final DeuteriumFormat.DeuteriumFile.Builder protoFile = DeuteriumFormat.DeuteriumFile.newBuilder()
 				.setName(data.getName())
 				.setDescription(data.getDescription());
@@ -196,10 +222,9 @@ public class ProtobufFileSaver implements FileSaver {
 				System.currentTimeMillis() - startTime);
 
 		// Write to file! Prepend with magic number ("DEUT")
-		final FileOutputStream outputFile = new FileOutputStream(filename);
-		outputFile.write("DEUT".getBytes(StandardCharsets.UTF_8));
-		outputFile.write(compressedData.toByteArray());
-		log.info("Wrote {} bytes to file {}", compressedData.size() + 4, filename);
-		outputFile.close();
+		file.write("DEUT".getBytes(StandardCharsets.UTF_8));
+		file.write(compressedData.toByteArray());
+		log.info("Wrote {} bytes to file", compressedData.size() + 4);
+		file.close();
 	}
 }
