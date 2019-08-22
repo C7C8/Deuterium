@@ -7,16 +7,17 @@ jdk:
 
 before_install:
   - chmod +x gradlew
+  - chmod +x travis.sh
 
 addons:
   apt:
     packages:
       - xvfb
-      - protobuf-compiler
 
 install:
   - export DISPLAY='99.0'
   - Xvfb :99 -screen 0 1920x180x24 > /dev/null 2>&1 &
+  - ./travis.sh
 
 script:
   - ./gradlew build -s
