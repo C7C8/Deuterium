@@ -1,0 +1,35 @@
+language: java
+
+os: linux
+dist: bionic
+jdk:
+  - openjdk12
+
+before_install:
+  - chmod +x gradlew
+  - chmod +x travis.sh
+
+addons:
+  apt:
+    packages:
+      - xvfb
+
+install:
+  - export DISPLAY='99.0'
+  - Xvfb :99 -screen 0 1920x180x24 > /dev/null 2>&1 &
+  - ./travis.sh
+
+script:
+  - ./gradlew build -s
+
+before_cache:
+  - rm -f $HOME/.gradle/caches/modules-2/modules-2.lock
+  - rm -rf $HOME/.gradle/caches/*/plugin-resolution/
+
+cache:
+  directories:
+    - $HOME/.gradle/caches/
+    - $HOME/.gradle/wrapper/
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash)

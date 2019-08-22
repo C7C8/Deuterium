@@ -23,18 +23,16 @@ import com.google.common.graph.EndpointPair;
 import dev.crmyers.deuterium.BaseTestCase;
 import dev.crmyers.deuterium.data.DeuteriumFile;
 import dev.crmyers.deuterium.data.DeuteriumGraph;
-import dev.crmyers.deuterium.data.exception.FileFormatException;
 import dev.crmyers.deuterium.data.Node;
+import dev.crmyers.deuterium.data.exception.FileFormatException;
 import lombok.extern.log4j.Log4j2;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import java.io.File;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -60,30 +58,14 @@ class ProtobufFileSaverTest extends BaseTestCase {
 	}
 
 	/**
-	 * Delete any .d2o files left over.
-	 */
-	@AfterAll
-	static void cleanup_global() throws IOException {
-		File cwd = new File(System.getProperty("user.dir"));
-		File[] d2oFiles = cwd.listFiles();
-		if (d2oFiles == null)
-			return;
-		for (File file : d2oFiles) {
-			if (file.getName().endsWith(".d2o")) {
-				if (!file.delete())
-					throw new IOException("Failed to delete test-generated file " + file.getName());
-			}
-		}
-	}
-
-	/**
 	 * Test successful save & retrieve operation
 	 */
 	@Test
 	void successfulSaveAndRetrieval() throws IOException {
 		final DeuteriumFile inputFile = generateTestFile();
-		fileSaver.saveFile("successfulSaveAndRetrieval.d2o", inputFile);
-		final DeuteriumFile loadedFile = fileSaver.loadFile("successfulSaveAndRetrieval.d2o");
+		ByteArrayOutputStream mockFile = new ByteArrayOutputStream();
+		fileSaver.saveFile(mockFile, inputFile);
+		final DeuteriumFile loadedFile = fileSaver.loadFile(new ByteArrayInputStream(mockFile.toByteArray()));
 
 		assertThat(loadedFile, notNullValue());
 		assertThat(loadedFile.getName(), is(equalTo(inputFile.getName())));
@@ -135,9 +117,6 @@ class ProtobufFileSaverTest extends BaseTestCase {
 
 	@Test
 	void loadCorruptFile() throws IOException {
-		FileOutputStream outputStream = new FileOutputStream(new File("corrupted.d2o"));
-		outputStream.write("This is bad data that should yield an error".getBytes(StandardCharsets.UTF_8));
-		outputStream.close();
-		assertThrows(FileFormatException.class, () -> fileSaver.loadFile("corrupted.d2o"));
+		assertThrows(FileFormatException.class, () -> fileSaver.loadFile(new ByteArrayInputStream("Corrupted file".getBytes())));
 	}
 }

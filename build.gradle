@@ -21,6 +21,7 @@ plugins {
     id 'java'
     id 'idea'
     id 'application'
+    id 'jacoco'
     id 'org.openjfx.javafxplugin' version '0.0.8'
     id "com.google.protobuf" version "0.8.10"
 }
@@ -42,6 +43,13 @@ javafx {
 
 repositories {
     mavenCentral()
+}
+
+jacocoTestReport {
+    reports {
+        xml.enabled true
+        html.enabled true
+    }
 }
 
 dependencies {
@@ -102,3 +110,5 @@ test {
     useJUnitPlatform()
     dependsOn 'cleanTest'
 }
+
+check.dependsOn jacocoTestReport

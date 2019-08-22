@@ -23,6 +23,8 @@ import dev.crmyers.deuterium.data.exception.FileFormatException;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 /**
  * Interface that allows for saving of Deuterium data to file.
@@ -38,7 +40,17 @@ public interface FileSaver {
 	 * @throws FileNotFoundException Thrown if the file cannot be loaded
 	 * @throws IOException Generic IO exception (e.g. invalid file)
 	 */
-	DeuteriumFile loadFile(String filename) throws FileNotFoundException, FileNotFoundException, IOException;
+	DeuteriumFile loadFile(String filename) throws FileNotFoundException, IOException;
+
+	/**
+	 * Load a Deuterium save file and return it in the form of data.
+	 * @param file Input stream to read from
+	 * @return Loaded data, already linked up and ready to go (i.e. graphs should be traversable)
+	 * @throws FileFormatException When file format to load is invalid
+	 * @throws FileNotFoundException Thrown if the file cannot be loaded
+	 * @throws IOException Generic IO exception (e.g. invalid file)
+	 */
+	DeuteriumFile loadFile(InputStream file) throws FileNotFoundException, IOException;
 
 	/**
 	 * Save a Deuterium data object to a new file.
@@ -48,4 +60,13 @@ public interface FileSaver {
 	 * @throws IOException Generic IO exception (e.g. out of space)
 	 */
 	void saveFile(String filename, DeuteriumFile data) throws FileNotFoundException, IOException;
+
+	/**
+	 * Save a Deuterium data object to a new file.
+	 * @param file Output stream to write to.
+	 * @param data Data to save.
+	 * @throws FileNotFoundException Thrown if the file cannot be saved because the containing folder does not exist
+	 * @throws IOException Generic IO exception (e.g. out of space)
+	 */
+	void saveFile(OutputStream file, DeuteriumFile data) throws FileNotFoundException, IOException;
 }
