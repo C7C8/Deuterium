@@ -22,6 +22,7 @@ package dev.crmyers.deuterium.data;
 import dev.crmyers.deuterium.BaseTestCase;
 import dev.crmyers.deuterium.data.exception.CycleException;
 import dev.crmyers.deuterium.data.exception.DependencyException;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -40,6 +41,8 @@ import static org.hamcrest.core.IsCollectionContaining.hasItems;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.jupiter.api.Assertions.*;
 
+@Tag("algorithm")
+@Tag("fast")
 class DeuteriumGraphTest extends BaseTestCase {
 
 	/* Graph 1:

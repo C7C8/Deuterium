@@ -27,6 +27,7 @@ import dev.crmyers.deuterium.data.Node;
 import dev.crmyers.deuterium.data.exception.FileFormatException;
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayInputStream;
@@ -46,6 +47,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  */
 @SuppressWarnings("UnstableApiUsage")
 @Log4j2
+@Tag("persistence")
+@Tag("fast")
 class ProtobufFileSaverTest extends BaseTestCase {
 	private static ProtobufFileSaver fileSaver;
 

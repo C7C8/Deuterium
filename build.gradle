@@ -108,7 +108,18 @@ jar {
 
 test {
     useJUnitPlatform()
-    dependsOn 'cleanTest'
+}
+
+task fastTest(type: Test) {
+    useJUnitPlatform {
+        includeTags 'fast'
+    }
+}
+
+task uiTest(type: Test) {
+    useJUnitPlatform {
+        includeTags 'ui'
+    }
 }
 
 check.dependsOn jacocoTestReport
