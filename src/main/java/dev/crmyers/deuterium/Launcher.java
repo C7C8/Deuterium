@@ -23,7 +23,6 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import org.apache.logging.log4j.LogManager;
@@ -48,10 +47,7 @@ public class Launcher extends Application {
 		FXMLLoader fxmlLoader = new FXMLLoader(Paths.fxml_main);
 		fxmlLoader.setControllerFactory(injector::getInstance);
 
-		Parent root = fxmlLoader.load();
-		primaryStage.setTitle("Deuterium Knowledge Engine");
-		Scene scene = new Scene(root);
+		Scene scene = new Scene(fxmlLoader.load());
 		primaryStage.setScene(scene);
-		primaryStage.show();
 	}
 }

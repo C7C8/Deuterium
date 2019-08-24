@@ -1,10 +1,10 @@
 language: java
 
 os: linux
-sudo: false
+sudo: true
 dist: bionic
-jdk:
-  - openjdk12
+jdk: openjdk12
+services: xvfb
 env:
   - _JAVA_OPTIONS="-Djava.awt.headless=true -Dtestfx.robot=glass -Dtestfx.headless=true -Dprism.order=sw"
 
@@ -15,24 +15,27 @@ before_install:
 addons:
   apt:
     packages:
-      - xvfb
+      - openjfx
+      - gradle
 
 install:
-  - export DISPLAY='99.0'
-  - Xvfb :99 -screen 0 1920x180x24 > /dev/null 2>&1 &
   - ./travis.sh
 
 script:
-  - ./gradlew build -s
+  - gradle check
 
 before_cache:
   - rm -f $HOME/.gradle/caches/modules-2/modules-2.lock
   - rm -rf $HOME/.gradle/caches/*/plugin-resolution/
+  - rm -f  $HOME/.gradle/caches/*/fileHashes/fileHashes.bin
+  - rm -f  $HOME/.gradle/caches/*/fileHashes/fileHashes.lock
+
 
 cache:
   directories:
     - $HOME/.gradle/caches/
     - $HOME/.gradle/wrapper/
+    - $HOME/.m2
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)

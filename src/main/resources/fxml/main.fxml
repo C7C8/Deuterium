@@ -7,46 +7,46 @@
 <?import javafx.scene.layout.BorderPane?>
 
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="1366.0" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dev.crmyers.deuterium.ui.Main">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1280" prefWidth="800" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dev.crmyers.deuterium.ui.Main">
    <top>
        <MenuBar BorderPane.alignment="CENTER">
            <Menu mnemonicParsing="false" text="File" fx:id="menuFile">
-               <MenuItem mnemonicParsing="false" fx:id="menuFileNew" onAction="#handleMenuEvent" text="New file" />
-               <MenuItem mnemonicParsing="false" fx:id="menuFileOpen" onAction="#handleMenuEvent" text="Open" />
-               <MenuItem mnemonicParsing="false" fx:id="menuFileSave" onAction="#handleMenuEvent" text="Save" />
-               <MenuItem mnemonicParsing="false" fx:id="menuFileSaveAs" onAction="#handleMenuEvent" text="Save as..." />
+               <MenuItem mnemonicParsing="false" onAction="#handleMenuEvent" text="New file" />
+               <MenuItem mnemonicParsing="false" onAction="#handleMenuEvent" text="Open" />
+               <MenuItem mnemonicParsing="false" onAction="#handleMenuEvent" text="Save" />
+               <MenuItem mnemonicParsing="false" onAction="#handleMenuEvent" text="Save as..." />
                <SeparatorMenuItem mnemonicParsing="false" />
-               <MenuItem mnemonicParsing="false" fx:id="menuFileExit" onAction="#handleMenuEvent" text="Exit" />
+               <MenuItem mnemonicParsing="false" onAction="#handleMenuEvent" text="Exit" />
            </Menu>
-           <Menu mnemonicParsing="false" fx:id="menuEdit" text="Edit">
-               <MenuItem mnemonicParsing="false" fx:id="menuEditUndo" onAction="#handleMenuEvent" text="Undo" />
-               <MenuItem mnemonicParsing="false" fx:id="menuEditRedo" onAction="#handleMenuEvent" text="Redo" />
-               <MenuItem mnemonicParsing="false" fx:id="menuEditCopy" onAction="#handleMenuEvent" text="Copy" />
-               <MenuItem mnemonicParsing="false" fx:id="menuEditCut" onAction="#handleMenuEvent" text="Cut" />
-               <MenuItem mnemonicParsing="false" fx:id="menuEditPaste" onAction="#handleMenuEvent" text="Paste" />
+           <Menu mnemonicParsing="false" text="Edit">
+               <MenuItem mnemonicParsing="false" onAction="#handleMenuEvent" text="Undo" />
+               <MenuItem mnemonicParsing="false" onAction="#handleMenuEvent" text="Redo" />
+               <MenuItem mnemonicParsing="false" onAction="#handleMenuEvent" text="Copy" />
+               <MenuItem mnemonicParsing="false" onAction="#handleMenuEvent" text="Cut" />
+               <MenuItem mnemonicParsing="false" onAction="#handleMenuEvent" text="Paste" />
                <SeparatorMenuItem mnemonicParsing="false" />
-               <MenuItem mnemonicParsing="false" fx:id="menuEditNewGraph" onAction="#handleMenuEvent" text="New graph" />
+               <MenuItem mnemonicParsing="false" onAction="#handleMenuEvent" text="New graph" />
            </Menu>
-           <Menu mnemonicParsing="false" fx:id="menuNode" text="Node">
-               <MenuItem mnemonicParsing="false" fx:id="menuNodeAddNode" onAction="#handleMenuEvent" text="Add node" />
-               <MenuItem mnemonicParsing="false" fx:id="menuNodeDeleteNode" onAction="#handleMenuEvent" text="Delete node" />
-               <MenuItem mnemonicParsing="false" fx:id="menuNodeAddDependency" onAction="#handleMenuEvent" text="Add dependency" />
-               <MenuItem mnemonicParsing="false" fx:id="menuNodeAddDependent" onAction="#handleMenuEvent" text="Add dependent" />
+           <Menu mnemonicParsing="false" text="Node">
+               <MenuItem mnemonicParsing="false" onAction="#handleMenuEvent" text="Add node" />
+               <MenuItem mnemonicParsing="false" onAction="#handleMenuEvent" text="Delete node" />
+               <MenuItem mnemonicParsing="false" onAction="#handleMenuEvent" text="Add dependency" />
+               <MenuItem mnemonicParsing="false" onAction="#handleMenuEvent" text="Add dependent" />
                <SeparatorMenuItem mnemonicParsing="false" />
-               <MenuItem mnemonicParsing="false" fx:id="menuNodeHighlightDependencies" onAction="#handleMenuEvent" text="Select dependencies" />
-               <MenuItem mnemonicParsing="false" fx:id="menuNodeSortDependencies" onAction="#handleMenuEvent" text="Sort dependencies" />
-               <MenuItem mnemonicParsing="false" fx:id="menuNodeFindLoops" onAction="#handleMenuEvent" text="Find loops" />
-               <MenuItem mnemonicParsing="false" fx:id="menuNodeFindShortestPath" onAction="#handleMenuEvent" text="Find shortest path" />
-               <MenuItem mnemonicParsing="false" fx:id="menuNodeFindExclusive" onAction="#handleMenuEvent" text="Find exclusive dependencies" />
+               <MenuItem mnemonicParsing="false" onAction="#handleMenuEvent" text="Select dependencies" />
+               <MenuItem mnemonicParsing="false" onAction="#handleMenuEvent" text="Sort dependencies" />
+               <MenuItem mnemonicParsing="false" onAction="#handleMenuEvent" text="Find loops" />
+               <MenuItem mnemonicParsing="false" onAction="#handleMenuEvent" text="Find shortest path" />
+               <MenuItem mnemonicParsing="false" onAction="#handleMenuEvent" text="Find exclusive dependencies" />
            </Menu>
-           <Menu mnemonicParsing="false" fx:id="menuHistory" text="History">
-               <MenuItem mnemonicParsing="false" fx:id="menuHistoryGraphHistory" onAction="#handleMenuEvent" text="Graph history" />
-               <MenuItem mnemonicParsing="false" fx:id="menuHistoryNodeHistory" onAction="#handleMenuEvent" text="Node history" />
-               <MenuItem mnemonicParsing="false" fx:id="menuHistoryRevertTo" onAction="#handleMenuEvent" text="Revert to..." />
+           <Menu mnemonicParsing="false" text="History">
+               <MenuItem mnemonicParsing="false" onAction="#handleMenuEvent" text="Graph history" />
+               <MenuItem mnemonicParsing="false" onAction="#handleMenuEvent" text="Node history" />
+               <MenuItem mnemonicParsing="false" onAction="#handleMenuEvent" text="Revert to..." />
            </Menu>
-           <Menu mnemonicParsing="false" fx:id="menuHelp" text="Help">
-               <MenuItem mnemonicParsing="false" fx:id="menuHelpUserGuide" onAction="#handleMenuEvent" text="User guide" />
-               <MenuItem mnemonicParsing="false" fx:id="menuHelpAbout" onAction="#handleMenuEvent" text="About" />
+           <Menu mnemonicParsing="false" text="Help">
+               <MenuItem mnemonicParsing="false" onAction="#handleMenuEvent" text="User gufx:ide" />
+               <MenuItem mnemonicParsing="false" onAction="#handleMenuEvent" text="About" />
            </Menu>
        </MenuBar>
    </top>

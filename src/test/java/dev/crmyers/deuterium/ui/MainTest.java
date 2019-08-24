@@ -19,133 +19,32 @@
 
 package dev.crmyers.deuterium.ui;
 
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+import dev.crmyers.deuterium.DeuteriumTestModule;
 import dev.crmyers.deuterium.Paths;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.stage.Stage;
 import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.testfx.api.FxRobot;
 import org.testfx.framework.junit5.ApplicationExtension;
+import org.testfx.framework.junit5.Start;
 
 import java.io.IOException;
 
-import static org.mockito.Mockito.reset;
-import static org.mockito.Mockito.verify;
-
 @Tag("ui")
 @ExtendWith(ApplicationExtension.class)
-public class MainTest extends BaseUITestCase {
+public class MainTest {
 
-	private MenuHandler menuHandler;
-
-	@Override
+	@Start
 	public void start(Stage stage) throws IOException {
-		fxml = Paths.fxml_main;
-		super.start(stage);
-		menuHandler = injector.getInstance(MenuHandler.class);
-		reset(menuHandler);
-	}
+		// Set up Guice dependency injection.
+		Injector injector = Guice.createInjector(new DeuteriumTestModule());
+		FXMLLoader fxmlLoader = new FXMLLoader(Paths.fxml_main);
+		fxmlLoader.setControllerFactory(injector::getInstance);
 
-	@Test
-	void menuActionWiring(FxRobot robot) {
-		robot.clickOn("#menuFile");
-		robot.clickOn("#menuFileNew");
-		verify(menuHandler).newFile();
-
-		robot.clickOn("#menuFile");
-		robot.clickOn("#menuFileOpen");
-		verify(menuHandler).openFile();
-
-		robot.clickOn("#menuFile");
-		robot.clickOn("#menuFileSave");
-		verify(menuHandler).saveFile();
-
-		robot.clickOn("#menuFile");
-		robot.clickOn("#menuFileSaveAs");
-		verify(menuHandler).saveFileAs();
-
-		robot.clickOn("#menuFile");
-		robot.clickOn("#menuFileExit");
-		verify(menuHandler).exit();
-
-		robot.clickOn("#menuEdit");
-		robot.clickOn("#menuEditUndo");
-		verify(menuHandler).undo();
-
-		robot.clickOn("#menuEdit");
-		robot.clickOn("#menuEditRedo");
-		verify(menuHandler).redo();
-
-		robot.clickOn("#menuEdit");
-		robot.clickOn("#menuEditCopy");
-		verify(menuHandler).copy();
-
-		robot.clickOn("#menuEdit");
-		robot.clickOn("#menuEditCut");
-		verify(menuHandler).cut();
-
-		robot.clickOn("#menuEdit");
-		robot.clickOn("#menuEditPaste");
-		verify(menuHandler).paste();
-
-		robot.clickOn("#menuEdit");
-		robot.clickOn("#menuEditNewGraph");
-		verify(menuHandler).newGraph();
-
-		robot.clickOn("#menuNode");
-		robot.clickOn("#menuNodeAddNode");
-		verify(menuHandler).addNode();
-
-		robot.clickOn("#menuNode");
-		robot.clickOn("#menuNodeDeleteNode");
-		verify(menuHandler).deleteNode();
-
-		robot.clickOn("#menuNode");
-		robot.clickOn("#menuNodeAddDependency");
-		verify(menuHandler).addDependency();
-
-		robot.clickOn("#menuNode");
-		robot.clickOn("#menuNodeAddDependent");
-		verify(menuHandler).addDependent();
-
-		robot.clickOn("#menuNode");
-		robot.clickOn("#menuNodeHighlightDependencies");
-		verify(menuHandler).selectDependencies();
-
-		robot.clickOn("#menuNode");
-		robot.clickOn("#menuNodeSortDependencies");
-		verify(menuHandler).sortDependencies();
-
-		robot.clickOn("#menuNode");
-		robot.clickOn("#menuNodeFindLoops");
-		verify(menuHandler).findLoops();
-
-		robot.clickOn("#menuNode");
-		robot.clickOn("#menuNodeFindShortestPath");
-		verify(menuHandler).findShortestPath();
-
-		robot.clickOn("#menuNode");
-		robot.clickOn("#menuNodeFindExclusive");
-		verify(menuHandler).findExclusiveDependencies();
-
-		robot.clickOn("#menuHistory");
-		robot.clickOn("#menuHistoryGraphHistory");
-		verify(menuHandler).graphHistory();
-
-		robot.clickOn("#menuHistory");
-		robot.clickOn("#menuHistoryNodeHistory");
-		verify(menuHandler).nodeHistory();
-
-		robot.clickOn("#menuHistory");
-		robot.clickOn("#menuHistoryRevertTo");
-		verify(menuHandler).revertTo();
-
-		robot.clickOn("#menuHelp");
-		robot.clickOn("#menuHelpUserGuide");
-		verify(menuHandler).userGuide();
-
-		robot.clickOn("#menuHelp");
-		robot.clickOn("#menuHelpAbout");
-		verify(menuHandler).about();
+		stage.setScene(new Scene(fxmlLoader.load()));
+		stage.show();
 	}
 }
