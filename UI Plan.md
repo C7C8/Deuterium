@@ -9,13 +9,13 @@
     * Save as
     * Exit
     * New file
-    * New graph
 * Edit
     * Undo
     * Redo
     * Copy (?)
     * Cut (?)
     * Paste (?)
+    * New graph
 * Node
     * Add node
     * Delete node

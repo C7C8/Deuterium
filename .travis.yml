@@ -1,9 +1,12 @@
 language: java
 
 os: linux
+sudo: false
 dist: bionic
 jdk:
   - openjdk12
+env:
+  - _JAVA_OPTIONS="-Djava.awt.headless=true -Dtestfx.robot=glass -Dtestfx.headless=true -Dprism.order=sw"
 
 before_install:
   - chmod +x gradlew

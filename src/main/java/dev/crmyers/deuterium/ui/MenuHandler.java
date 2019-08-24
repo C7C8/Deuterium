@@ -17,10 +17,39 @@
  * along with Deuterium.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package dev.crmyers.deuterium;
+package dev.crmyers.deuterium.ui;
 
-import java.net.URL;
+import lombok.extern.log4j.Log4j2;
 
-public class Paths {
-	public static final URL fxml_main = Paths.class.getResource("/fxml/main.fxml");
+@Log4j2
+public class MenuHandler {
+	void newFile() {}
+	void openFile() {}
+	void saveFile() {}
+	void saveFileAs() {}
+	void exit() {}
+
+	void undo() {}
+	void redo() {}
+	void copy() {}
+	void cut() {}
+	void paste() {}
+	void newGraph() {}
+
+	void addNode() {}
+	void deleteNode() {}
+	void addDependency() {}
+	void addDependent() {}
+	void selectDependencies() {}
+	void sortDependencies() {}
+	void findLoops() {}
+	void findShortestPath() {}
+	void findExclusiveDependencies() {}
+
+	void graphHistory() {}
+	void nodeHistory() {}
+	void revertTo() {}
+
+	void userGuide() {}
+	void about() {}
 }

@@ -20,9 +20,19 @@
 package dev.crmyers.deuterium;
 
 import com.google.inject.AbstractModule;
+import com.google.inject.Provides;
+import com.google.inject.Singleton;
+import dev.crmyers.deuterium.ui.MenuHandler;
+
+import static org.mockito.Mockito.mock;
 
 public class DeuteriumTestModule extends AbstractModule {
 	public void configure() {
+	}
 
+	@Provides
+	@Singleton
+	public MenuHandler provideMenuHandler() {
+		return mock(MenuHandler.class);
 	}
 }

@@ -17,34 +17,35 @@
  * along with Deuterium.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package dev.crmyers.deuterium;
+package dev.crmyers.deuterium.ui;
 
-import javafx.application.Application;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+import dev.crmyers.deuterium.DeuteriumTestModule;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.testfx.framework.junit5.ApplicationTest;
 
 import java.io.IOException;
+import java.net.URL;
 
+public abstract class BaseUITestCase extends ApplicationTest {
 
-public class Main extends Application {
-
-	private static final Logger logger = LogManager.getLogger();
-
-	public static void main(String[] args) {
-		logger.info("Application start");
-		launch();
-	}
+	protected Injector injector;
+	protected URL fxml;
 
 	@Override
-	public void start(Stage primaryStage) throws IOException {
-		Parent root = FXMLLoader.load(Paths.fxml_main);
-		primaryStage.setTitle("Deuterium Knowledge Engine");
+	public void start(Stage stage) throws IOException {
+		// Set up Guice dependency injection.
+		injector = Guice.createInjector(new DeuteriumTestModule());
+		FXMLLoader fxmlLoader = new FXMLLoader(fxml);
+		fxmlLoader.setControllerFactory(injector::getInstance);
+
+		Parent root = fxmlLoader.load();
 		Scene scene = new Scene(root);
-		primaryStage.setScene(scene);
-		primaryStage.show();
+		stage.setScene(scene);
+		stage.show();
 	}
 }
