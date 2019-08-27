@@ -26,7 +26,6 @@ import lombok.*;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-@AllArgsConstructor
 public class AddNodeCommand extends EditNodeCommand {
 	/**
 	 * Generate a command with the opposite effect of this one. E.g. add node -> delete node

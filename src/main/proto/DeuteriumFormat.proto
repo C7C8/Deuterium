@@ -1,5 +1,5 @@
 syntax = "proto3";
-package dev.crmyers.deuterium.data.protobuf;
+package dev.crmyers.deuterium.model.protobuf;
 
 message Node {
     string id = 1 ;
@@ -8,7 +8,6 @@ message Node {
 };
 
 message NodeHistory {
-    string id = 1;
     fixed64 date = 20;
     string editId = 30;
     enum Action {

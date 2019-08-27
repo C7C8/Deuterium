@@ -21,6 +21,7 @@ package dev.crmyers.deuterium.model;
 
 import com.google.common.collect.Sets;
 import com.google.common.graph.*;
+import dev.crmyers.deuterium.command.EditNodeCommand;
 import dev.crmyers.deuterium.model.exception.CycleException;
 import dev.crmyers.deuterium.model.exception.DependencyException;
 import lombok.*;
@@ -39,7 +40,7 @@ public class DeuteriumGraph implements MutableGraph<Node> {
 	String name;
 	String description;
 	Map<UUID, Node> nodes = new HashMap<>();
-//	List<NodeHistory> history = new ArrayList<>();
+	List<EditNodeCommand> history = new ArrayList<>();
 
 	@Getter(AccessLevel.NONE)
 	@Setter(AccessLevel.NONE)

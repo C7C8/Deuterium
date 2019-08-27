@@ -19,10 +19,7 @@
 
 package dev.crmyers.deuterium.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.UUID;
 
@@ -45,6 +42,15 @@ public class Node {
 	public Node(String name) {
 		this.name = name;
 		id = UUID.randomUUID();
+	}
+
+	/**
+	 * Construct node from ID, name is left blank (literally).
+	 * @param uuid UUID.
+	 */
+	public Node(@NonNull UUID uuid) {
+		this.name = "Blank";
+		this.id = uuid;
 	}
 
 	@Override

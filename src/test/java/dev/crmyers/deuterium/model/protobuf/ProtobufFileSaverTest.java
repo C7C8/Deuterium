@@ -85,8 +85,7 @@ class ProtobufFileSaverTest extends BaseTestCase {
 			assertThat(loadedGraph.getDescription(), equalTo(inputGraph.getDescription()));
 			assertThat(loadedGraph.getName(), equalTo(inputGraph.getName()));
 			assertThat(loadedGraph.getNodes().size(), equalTo(inputGraph.getNodes().size()));
-			// TODO re-add history tests
-//			assertThat(loadedGraph.getHistory().size(), equalTo(loadedGraph.getHistory().size()));
+			assertThat(loadedGraph.getHistory().size(), equalTo(loadedGraph.getHistory().size()));
 
 			// Make sure all nodes were copied over correctly
 			for (Node loadedNode : loadedGraph.getNodes().values()) {
@@ -106,9 +105,8 @@ class ProtobufFileSaverTest extends BaseTestCase {
 			}
 
 			// Make sure all history was copied over correctly. Order DOES matter here.
-			// TODO Re-add history tests
-//			for (int i = 0; i < loadedGraph.getHistory().size(); i++)
-//				assertThat(loadedGraph.getHistory().get(i), equalTo(inputGraph.getHistory().get(i)));
+			for (int i = 0; i < loadedGraph.getHistory().size(); i++)
+				assertThat(loadedGraph.getHistory().get(i), equalTo(inputGraph.getHistory().get(i)));
 		}
 	}
 

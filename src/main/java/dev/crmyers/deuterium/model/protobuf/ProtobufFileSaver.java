@@ -21,13 +21,20 @@ package dev.crmyers.deuterium.model.protobuf;
 
 import com.google.common.graph.EndpointPair;
 import com.google.common.io.BaseEncoding;
-import dev.crmyers.deuterium.model.*;
+import dev.crmyers.deuterium.command.*;
+import dev.crmyers.deuterium.model.DeuteriumFile;
+import dev.crmyers.deuterium.model.DeuteriumGraph;
+import dev.crmyers.deuterium.model.FileSaver;
+import dev.crmyers.deuterium.model.Node;
 import dev.crmyers.deuterium.model.exception.FileFormatException;
 import lombok.extern.log4j.Log4j2;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.UUID;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
@@ -117,19 +124,44 @@ public class ProtobufFileSaver implements FileSaver {
 
 			// Add node histories to the graph
 			// TODO Replace with command-based history
-//			ArrayList<NodeHistory> nodeHistories = new ArrayList<>();
-//			for (DeuteriumFormat.NodeHistory protoHistory : protoGraph.getHistoryList()) {
-//				objectCount++;
-//				final NodeHistory history = new NodeHistory();
-//				history.setId(UUID.fromString(protoHistory.getId()));
-//				history.setDate(new Date(protoHistory.getDate()));
-//				history.setEditId(UUID.fromString(protoHistory.getEditId()));
-//				history.setAction(Action.values()[protoHistory.getAction().ordinal()]);
-//				history.setChange(protoHistory.getChange());
-//				log.debug("Unpacking history {} for node {} on {}", history.getId(), history.getEditId(), history.getDate());
-//				nodeHistories.add(history);
-//			}
-//			graph.setHistory(nodeHistories);
+			ArrayList<EditNodeCommand> nodeHistories = new ArrayList<>();
+			for (DeuteriumFormat.NodeHistory protoHistory : protoGraph.getHistoryList()) {
+				objectCount++;
+				EditNodeCommand command;
+				switch (protoHistory.getAction()) {
+					case ADD:
+						command = new AddNodeCommand();
+						break;
+					case DELETE:
+						command = new DeleteNodeCommand();
+						break;
+					case EDIT_NAME:
+						command = new EditNodeNameCommand();
+						((EditNodeNameCommand) command).setChange(protoHistory.getChange());
+						break;
+					case EDIT_DETAILS:
+						command = new EditNodeDetailsCommand();
+						((EditNodeDetailsCommand) command).setChange(protoHistory.getChange());
+						break;
+					case ADD_NEIGHBOR:
+						command = new AddDependencyCommand();
+						((AddDependencyCommand) command).setDependency(UUID.fromString(protoHistory.getChange()));
+						break;
+					case DEL_NEIGHBOR:
+						command = new DeleteDependencyCommand();
+						((DeleteDependencyCommand) command).setDependency(UUID.fromString(protoHistory.getChange()));
+						break;
+					default:
+						log.error("Read unidentifiable node history type for history {}", protoHistory);
+						throw new FileFormatException("Read unidentifiable node history type");
+				}
+				command.setNode(UUID.fromString(protoHistory.getEditId()));
+				command.setDate(new Date(protoHistory.getDate()));
+
+				log.debug("Unpacking history for node {} on {}", command.getNode(), command.getDate());
+				nodeHistories.add(command);
+			}
+			graph.setHistory(nodeHistories);
 		}
 		outputFile.setGraphs(graphs);
 		log.info("Loaded {} objects from file in {} ms", objectCount, System.currentTimeMillis() - startTime);

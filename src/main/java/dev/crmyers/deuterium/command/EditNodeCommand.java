@@ -19,8 +19,13 @@
 
 package dev.crmyers.deuterium.command;
 
-import dev.crmyers.deuterium.model.Node;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+
+import java.util.Date;
+import java.util.UUID;
 
 /**
  * Edit node base command.
@@ -30,7 +35,8 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 public abstract class EditNodeCommand extends Command {
-	protected Node node;
+	protected UUID node;
+	protected Date date;
 
 	/**
 	 * Generate a command with the opposite effect of this one. E.g. add node -> delete node

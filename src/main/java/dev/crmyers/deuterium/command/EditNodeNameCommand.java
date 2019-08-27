@@ -27,7 +27,7 @@ import lombok.*;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @AllArgsConstructor
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@NoArgsConstructor
 public class EditNodeNameCommand extends EditNodeCommand {
 	String change;
 

@@ -19,7 +19,10 @@
 
 package dev.crmyers.deuterium;
 
-import dev.crmyers.deuterium.model.*;
+import dev.crmyers.deuterium.command.*;
+import dev.crmyers.deuterium.model.DeuteriumFile;
+import dev.crmyers.deuterium.model.DeuteriumGraph;
+import dev.crmyers.deuterium.model.Node;
 
 import java.util.*;
 
@@ -50,17 +53,23 @@ public class BaseTestCase {
 			graph.setNodes(nodes);
 
 			// Link all nodes together and add some ADD history to them
-//			final ArrayList<NodeHistory> nodeHistories = new ArrayList<>();
-//			for (Node node : nodes.values()) {
-//				for (Node neighbor : nodes.values()) {
-//					if (node.getId().equals(neighbor.getId()))
-//						continue;
-//					graph.putEdge(node, neighbor);
-//				}
-
-//				nodeHistories.add(new NodeHistory(UUID.randomUUID(), new Date(), node.getId(), Action.ADD, "Add"));
-//			}
-//			graph.setHistory(nodeHistories);
+			Random random = new Random();
+			for (Node node : nodes.values()) {
+				for (Node neighbor : nodes.values()) {
+					if (node.getId().equals(neighbor.getId()))
+						continue;
+					graph.putEdge(node, neighbor);
+				}
+			}
+			final ArrayList<EditNodeCommand> nodeHistories = new ArrayList<>();
+			nodeHistories.add(new AddDependencyCommand(UUID.randomUUID()));
+			nodeHistories.add(new AddNodeCommand());
+			nodeHistories.add(new DeleteDependencyCommand(UUID.randomUUID()));
+			nodeHistories.add(new DeleteNodeCommand());
+			nodeHistories.add(new EditNodeDetailsCommand("Edit!"));
+			nodeHistories.add(new EditNodeNameCommand("Another edit!"));
+			Collections.shuffle(nodeHistories);
+			graph.setHistory(nodeHistories);
 			graphs.put(graph.getId(), graph);
 		}
 

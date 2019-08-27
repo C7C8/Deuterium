@@ -19,8 +19,12 @@
 
 package dev.crmyers.deuterium.command;
 
-import dev.crmyers.deuterium.model.Node;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+
+import java.util.UUID;
 
 /**
  * Command to delete a dependency.
@@ -28,9 +32,9 @@ import lombok.*;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @AllArgsConstructor
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@NoArgsConstructor
 public class DeleteDependencyCommand extends EditNodeCommand {
-	protected Node dependency;
+	protected UUID dependency;
 
 	/**
 	 * Generate a command with the opposite effect of this one. E.g. add node -> delete node
