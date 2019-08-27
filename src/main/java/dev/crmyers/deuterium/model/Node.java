@@ -17,21 +17,40 @@
  * along with Deuterium.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package dev.crmyers.deuterium.data.exception;
+package dev.crmyers.deuterium.model;
 
-import dev.crmyers.deuterium.data.Node;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-import java.util.Set;
+import java.util.UUID;
 
 /**
- * Thrown in case of a bad dependency calculation request
+ * Class to represent a single Deuterium node.
  */
-public class DependencyException extends GraphException {
-	public DependencyException(String message) {
-		super(message);
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+public class Node {
+	private UUID id;
+	private String name;
+	private String details;
+
+	/**
+	 * Construct a node with name only; details is left at nothing, ID is randomized
+	 * @param name Node name
+	 */
+	public Node(String name) {
+		this.name = name;
+		id = UUID.randomUUID();
 	}
 
-	public DependencyException(String message, Set<Node> nodes) {
-		super(message, nodes);
+	@Override
+	public String toString() {
+//		return "Node(id=\"" + id + "\", name=\"" + name + "\", details=\"" + details + ")";
+		return name;
 	}
 }
+

@@ -17,27 +17,27 @@
  * along with Deuterium.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package dev.crmyers.deuterium;
+package dev.crmyers.deuterium.command;
 
-import com.google.common.eventbus.EventBus;
-import com.google.inject.AbstractModule;
-import com.google.inject.Provides;
-import com.google.inject.Singleton;
-import dev.crmyers.deuterium.model.FileSaver;
-import dev.crmyers.deuterium.model.protobuf.ProtobufFileSaver;
+import lombok.*;
 
 /**
- * Guice DI module for the project.
+ * Command to edit a node's name.
  */
-@SuppressWarnings("UnstableApiUsage")
-public class DeuteriumModule extends AbstractModule {
-	protected void configure() {
-		bind(FileSaver.class).to(ProtobufFileSaver.class);
-	}
+@Data
+@EqualsAndHashCode(callSuper = true)
+@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public class EditNodeNameCommand extends EditNodeCommand {
+	String change;
 
-	@Provides
-	@Singleton
-	protected EventBus provideEventBus() {
-		return new EventBus();
+	/**
+	 * Generate a command with the opposite effect of this one. E.g. add node -> delete node
+	 *
+	 * @return Reverse command.
+	 */
+	@Override
+	EditNodeCommand generateReverse() {
+		return null;
 	}
 }

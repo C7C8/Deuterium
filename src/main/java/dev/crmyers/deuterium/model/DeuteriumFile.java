@@ -17,13 +17,23 @@
  * along with Deuterium.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package dev.crmyers.deuterium.data.exception;
+package dev.crmyers.deuterium.model;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.util.Map;
+import java.util.UUID;
 
 /**
- * Exception thrown when the file format is invalid
+ * Class to represent a Deuterium save file (.d2o)
  */
-public class FileFormatException extends RuntimeException {
-	public FileFormatException(String msg) {
-		super(msg);
-	}
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class DeuteriumFile {
+	String name;
+	String description;
+	Map<UUID, DeuteriumGraph> graphs;
 }

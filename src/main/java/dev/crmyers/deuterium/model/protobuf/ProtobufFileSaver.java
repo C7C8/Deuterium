@@ -17,12 +17,12 @@
  * along with Deuterium.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package dev.crmyers.deuterium.data.protobuf;
+package dev.crmyers.deuterium.model.protobuf;
 
 import com.google.common.graph.EndpointPair;
 import com.google.common.io.BaseEncoding;
-import dev.crmyers.deuterium.data.*;
-import dev.crmyers.deuterium.data.exception.FileFormatException;
+import dev.crmyers.deuterium.model.*;
+import dev.crmyers.deuterium.model.exception.FileFormatException;
 import lombok.extern.log4j.Log4j2;
 
 import java.io.*;
@@ -116,19 +116,20 @@ public class ProtobufFileSaver implements FileSaver {
 			}
 
 			// Add node histories to the graph
-			ArrayList<NodeHistory> nodeHistories = new ArrayList<>();
-			for (DeuteriumFormat.NodeHistory protoHistory : protoGraph.getHistoryList()) {
-				objectCount++;
-				final NodeHistory history = new NodeHistory();
-				history.setId(UUID.fromString(protoHistory.getId()));
-				history.setDate(new Date(protoHistory.getDate()));
-				history.setEditId(UUID.fromString(protoHistory.getEditId()));
-				history.setAction(Action.values()[protoHistory.getAction().ordinal()]);
-				history.setChange(protoHistory.getChange());
-				log.debug("Unpacking history {} for node {} on {}", history.getId(), history.getEditId(), history.getDate());
-				nodeHistories.add(history);
-			}
-			graph.setHistory(nodeHistories);
+			// TODO Replace with command-based history
+//			ArrayList<NodeHistory> nodeHistories = new ArrayList<>();
+//			for (DeuteriumFormat.NodeHistory protoHistory : protoGraph.getHistoryList()) {
+//				objectCount++;
+//				final NodeHistory history = new NodeHistory();
+//				history.setId(UUID.fromString(protoHistory.getId()));
+//				history.setDate(new Date(protoHistory.getDate()));
+//				history.setEditId(UUID.fromString(protoHistory.getEditId()));
+//				history.setAction(Action.values()[protoHistory.getAction().ordinal()]);
+//				history.setChange(protoHistory.getChange());
+//				log.debug("Unpacking history {} for node {} on {}", history.getId(), history.getEditId(), history.getDate());
+//				nodeHistories.add(history);
+//			}
+//			graph.setHistory(nodeHistories);
 		}
 		outputFile.setGraphs(graphs);
 		log.info("Loaded {} objects from file in {} ms", objectCount, System.currentTimeMillis() - startTime);
@@ -189,17 +190,18 @@ public class ProtobufFileSaver implements FileSaver {
 			}
 
 			// Convert histories
-			for (NodeHistory inputHistory : inputGraph.getHistory()) {
-				objectCount++;
-				log.debug("Packing history {} for node {} on {}", inputHistory.getId(), inputHistory.getEditId(), inputHistory.getDate());
-				final DeuteriumFormat.NodeHistory.Builder protoHistory = DeuteriumFormat.NodeHistory.newBuilder()
-						.setId(inputHistory.getId().toString())
-						.setDate(inputHistory.getDate().getTime())
-						.setEditId(inputHistory.getEditId().toString())
-						.setAction(DeuteriumFormat.NodeHistory.Action.forNumber(inputHistory.getAction().ordinal()))
-						.setChange(inputHistory.getChange());
-				protoGraph.addHistory(protoHistory.build());
-			}
+			// TODO Replace with command-based history
+//			for (NodeHistory inputHistory : inputGraph.getHistory()) {
+//				objectCount++;
+//				log.debug("Packing history {} for node {} on {}", inputHistory.getId(), inputHistory.getEditId(), inputHistory.getDate());
+//				final DeuteriumFormat.NodeHistory.Builder protoHistory = DeuteriumFormat.NodeHistory.newBuilder()
+//						.setId(inputHistory.getId().toString())
+//						.setDate(inputHistory.getDate().getTime())
+//						.setEditId(inputHistory.getEditId().toString())
+//						.setAction(DeuteriumFormat.NodeHistory.Action.forNumber(inputHistory.getAction().ordinal()))
+//						.setChange(inputHistory.getChange());
+//				protoGraph.addHistory(protoHistory.build());
+//			}
 
 			// Convert edges
 			for (EndpointPair<Node> inputEdge : inputGraph.edges()) {

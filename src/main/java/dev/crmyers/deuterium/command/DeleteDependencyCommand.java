@@ -17,23 +17,28 @@
  * along with Deuterium.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package dev.crmyers.deuterium.data;
+package dev.crmyers.deuterium.command;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
-import java.util.Map;
-import java.util.UUID;
+import dev.crmyers.deuterium.model.Node;
+import lombok.*;
 
 /**
- * Class to represent a Deuterium save file (.d2o)
+ * Command to delete a dependency.
  */
 @Data
+@EqualsAndHashCode(callSuper = true)
 @AllArgsConstructor
-@NoArgsConstructor
-public class DeuteriumFile {
-	String name;
-	String description;
-	Map<UUID, DeuteriumGraph> graphs;
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public class DeleteDependencyCommand extends EditNodeCommand {
+	protected Node dependency;
+
+	/**
+	 * Generate a command with the opposite effect of this one. E.g. add node -> delete node
+	 *
+	 * @return Reverse command.
+	 */
+	@Override
+	EditNodeCommand generateReverse() {
+		return null;
+	}
 }

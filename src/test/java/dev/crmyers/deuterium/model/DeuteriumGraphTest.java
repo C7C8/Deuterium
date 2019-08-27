@@ -17,11 +17,11 @@
  * along with Deuterium.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package dev.crmyers.deuterium.data;
+package dev.crmyers.deuterium.model;
 
 import dev.crmyers.deuterium.BaseTestCase;
-import dev.crmyers.deuterium.data.exception.CycleException;
-import dev.crmyers.deuterium.data.exception.DependencyException;
+import dev.crmyers.deuterium.model.exception.CycleException;
+import dev.crmyers.deuterium.model.exception.DependencyException;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;

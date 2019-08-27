@@ -17,8 +17,21 @@
  * along with Deuterium.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package dev.crmyers.deuterium.data;
+package dev.crmyers.deuterium.model.exception;
 
-public enum Action {
-	ADD, DELETE, EDIT_NAME, EDIT_DETAILS, ADD_NEIGHBOR, DEL_NEIGHBOR;
+import dev.crmyers.deuterium.model.Node;
+
+import java.util.Set;
+
+/**
+ * Thrown if a cycle is detected in the graph
+ */
+public class CycleException extends GraphException {
+	public CycleException(String message) {
+		super(message);
+	}
+
+	public CycleException(String message, Set<Node> nodes) {
+		super(message, nodes);
+	}
 }

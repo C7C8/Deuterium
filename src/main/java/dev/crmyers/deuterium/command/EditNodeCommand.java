@@ -17,21 +17,24 @@
  * along with Deuterium.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package dev.crmyers.deuterium.data.exception;
+package dev.crmyers.deuterium.command;
 
-import dev.crmyers.deuterium.data.Node;
-
-import java.util.Set;
+import dev.crmyers.deuterium.model.Node;
+import lombok.*;
 
 /**
- * Thrown if a cycle is detected in the graph
+ * Edit node base command.
  */
-public class CycleException extends GraphException {
-	public CycleException(String message) {
-		super(message);
-	}
+@Data
+@EqualsAndHashCode(callSuper = true)
+@AllArgsConstructor
+@NoArgsConstructor
+public abstract class EditNodeCommand extends Command {
+	protected Node node;
 
-	public CycleException(String message, Set<Node> nodes) {
-		super(message, nodes);
-	}
+	/**
+	 * Generate a command with the opposite effect of this one. E.g. add node -> delete node
+	 * @return Reverse command.
+	 */
+	abstract EditNodeCommand generateReverse();
 }

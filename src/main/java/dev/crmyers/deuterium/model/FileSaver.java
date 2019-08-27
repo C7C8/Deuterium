@@ -17,9 +17,9 @@
  * along with Deuterium.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package dev.crmyers.deuterium.data;
+package dev.crmyers.deuterium.model;
 
-import dev.crmyers.deuterium.data.exception.FileFormatException;
+import dev.crmyers.deuterium.model.exception.FileFormatException;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;

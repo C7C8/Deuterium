@@ -17,26 +17,27 @@
  * along with Deuterium.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package dev.crmyers.deuterium.data.exception;
+package dev.crmyers.deuterium.command;
 
-import dev.crmyers.deuterium.data.Node;
-import lombok.Getter;
-
-import java.util.Set;
+import lombok.*;
 
 /**
- * Exception to represent graph exceptions
+ * Command to edit a node's details.
  */
-public class GraphException extends RuntimeException {
-	@Getter
-	private Set<Node> nodes;
+@Data
+@EqualsAndHashCode(callSuper = true)
+@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public class EditNodeDetailsCommand extends EditNodeCommand {
+	String change;
 
-	public GraphException(String message) {
-		super(message);
-	}
-
-	public GraphException(String message, Set<Node> nodes) {
-		super(message);
-		this.nodes = nodes;
+	/**
+	 * Generate a command with the opposite effect of this one. E.g. add node -> delete node
+	 *
+	 * @return Reverse command.
+	 */
+	@Override
+	EditNodeCommand generateReverse() {
+		return null;
 	}
 }

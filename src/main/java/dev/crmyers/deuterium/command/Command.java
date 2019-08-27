@@ -17,27 +17,23 @@
  * along with Deuterium.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package dev.crmyers.deuterium;
+package dev.crmyers.deuterium.command;
 
-import com.google.common.eventbus.EventBus;
-import com.google.inject.AbstractModule;
-import com.google.inject.Provides;
-import com.google.inject.Singleton;
-import dev.crmyers.deuterium.model.FileSaver;
-import dev.crmyers.deuterium.model.protobuf.ProtobufFileSaver;
+import lombok.AccessLevel;
+import lombok.Data;
+import lombok.Setter;
 
 /**
- * Guice DI module for the project.
+ * Base command object.
  */
-@SuppressWarnings("UnstableApiUsage")
-public class DeuteriumModule extends AbstractModule {
-	protected void configure() {
-		bind(FileSaver.class).to(ProtobufFileSaver.class);
-	}
+@Data
+public abstract class Command {
+	@Setter(value = AccessLevel.NONE)
+	protected String name;
 
-	@Provides
-	@Singleton
-	protected EventBus provideEventBus() {
-		return new EventBus();
+	protected Command() {}
+
+	protected Command(String name) {
+		this.name = name;
 	}
 }

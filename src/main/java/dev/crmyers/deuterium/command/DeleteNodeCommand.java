@@ -17,25 +17,25 @@
  * along with Deuterium.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package dev.crmyers.deuterium.data;
+package dev.crmyers.deuterium.command;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
-import java.util.Date;
-import java.util.UUID;
+import lombok.*;
 
 /**
- * Class to represent changes to nodes, stored at a graph-level.
+ * Command to delete a node.
  */
 @Data
 @AllArgsConstructor
-@NoArgsConstructor
-public class NodeHistory {
-	UUID id;
-	Date date;
-	UUID editId;
-	Action action;
-	String change;
+@EqualsAndHashCode(callSuper = true)
+public class DeleteNodeCommand extends EditNodeCommand {
+
+	/**
+	 * Generate a command with the opposite effect of this one. E.g. add node -> delete node
+	 *
+	 * @return Reverse command.
+	 */
+	@Override
+	EditNodeCommand generateReverse() {
+		return null;
+	}
 }

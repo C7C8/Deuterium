@@ -17,12 +17,12 @@
  * along with Deuterium.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package dev.crmyers.deuterium.data;
+package dev.crmyers.deuterium.model;
 
 import com.google.common.collect.Sets;
 import com.google.common.graph.*;
-import dev.crmyers.deuterium.data.exception.CycleException;
-import dev.crmyers.deuterium.data.exception.DependencyException;
+import dev.crmyers.deuterium.model.exception.CycleException;
+import dev.crmyers.deuterium.model.exception.DependencyException;
 import lombok.*;
 
 import java.util.*;
@@ -39,7 +39,7 @@ public class DeuteriumGraph implements MutableGraph<Node> {
 	String name;
 	String description;
 	Map<UUID, Node> nodes = new HashMap<>();
-	List<NodeHistory> history = new ArrayList<>();
+//	List<NodeHistory> history = new ArrayList<>();
 
 	@Getter(AccessLevel.NONE)
 	@Setter(AccessLevel.NONE)

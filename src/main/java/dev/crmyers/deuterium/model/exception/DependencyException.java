@@ -17,27 +17,21 @@
  * along with Deuterium.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package dev.crmyers.deuterium;
+package dev.crmyers.deuterium.model.exception;
 
-import com.google.common.eventbus.EventBus;
-import com.google.inject.AbstractModule;
-import com.google.inject.Provides;
-import com.google.inject.Singleton;
-import dev.crmyers.deuterium.model.FileSaver;
-import dev.crmyers.deuterium.model.protobuf.ProtobufFileSaver;
+import dev.crmyers.deuterium.model.Node;
+
+import java.util.Set;
 
 /**
- * Guice DI module for the project.
+ * Thrown in case of a bad dependency calculation request
  */
-@SuppressWarnings("UnstableApiUsage")
-public class DeuteriumModule extends AbstractModule {
-	protected void configure() {
-		bind(FileSaver.class).to(ProtobufFileSaver.class);
+public class DependencyException extends GraphException {
+	public DependencyException(String message) {
+		super(message);
 	}
 
-	@Provides
-	@Singleton
-	protected EventBus provideEventBus() {
-		return new EventBus();
+	public DependencyException(String message, Set<Node> nodes) {
+		super(message, nodes);
 	}
 }
