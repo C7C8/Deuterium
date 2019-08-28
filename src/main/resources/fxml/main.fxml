@@ -1,53 +1,167 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Menu?>
-<?import javafx.scene.control.MenuBar?>
-<?import javafx.scene.control.MenuItem?>
-<?import javafx.scene.control.SeparatorMenuItem?>
-<?import javafx.scene.layout.BorderPane?>
-
-
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1280" prefWidth="800" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dev.crmyers.deuterium.ui.Main">
-   <top>
-       <MenuBar BorderPane.alignment="CENTER">
-           <Menu mnemonicParsing="false" text="File" fx:id="menuFile">
-               <MenuItem mnemonicParsing="false" onAction="#handleMenuEvent" text="New file" />
-               <MenuItem mnemonicParsing="false" onAction="#handleMenuEvent" text="Open" />
-               <MenuItem mnemonicParsing="false" onAction="#handleMenuEvent" text="Save" />
-               <MenuItem mnemonicParsing="false" onAction="#handleMenuEvent" text="Save as..." />
-               <SeparatorMenuItem mnemonicParsing="false" />
-               <MenuItem mnemonicParsing="false" onAction="#handleMenuEvent" text="Exit" />
-           </Menu>
-           <Menu mnemonicParsing="false" text="Edit">
-               <MenuItem mnemonicParsing="false" onAction="#handleMenuEvent" text="Undo" />
-               <MenuItem mnemonicParsing="false" onAction="#handleMenuEvent" text="Redo" />
-               <MenuItem mnemonicParsing="false" onAction="#handleMenuEvent" text="Copy" />
-               <MenuItem mnemonicParsing="false" onAction="#handleMenuEvent" text="Cut" />
-               <MenuItem mnemonicParsing="false" onAction="#handleMenuEvent" text="Paste" />
-               <SeparatorMenuItem mnemonicParsing="false" />
-               <MenuItem mnemonicParsing="false" onAction="#handleMenuEvent" text="New graph" />
-           </Menu>
-           <Menu mnemonicParsing="false" text="Node">
-               <MenuItem mnemonicParsing="false" onAction="#handleMenuEvent" text="Add node" />
-               <MenuItem mnemonicParsing="false" onAction="#handleMenuEvent" text="Delete node" />
-               <MenuItem mnemonicParsing="false" onAction="#handleMenuEvent" text="Add dependency" />
-               <MenuItem mnemonicParsing="false" onAction="#handleMenuEvent" text="Add dependent" />
-               <SeparatorMenuItem mnemonicParsing="false" />
-               <MenuItem mnemonicParsing="false" onAction="#handleMenuEvent" text="Select dependencies" />
-               <MenuItem mnemonicParsing="false" onAction="#handleMenuEvent" text="Sort dependencies" />
-               <MenuItem mnemonicParsing="false" onAction="#handleMenuEvent" text="Find loops" />
-               <MenuItem mnemonicParsing="false" onAction="#handleMenuEvent" text="Find shortest path" />
-               <MenuItem mnemonicParsing="false" onAction="#handleMenuEvent" text="Find exclusive dependencies" />
-           </Menu>
-           <Menu mnemonicParsing="false" text="History">
-               <MenuItem mnemonicParsing="false" onAction="#handleMenuEvent" text="Graph history" />
-               <MenuItem mnemonicParsing="false" onAction="#handleMenuEvent" text="Node history" />
-               <MenuItem mnemonicParsing="false" onAction="#handleMenuEvent" text="Revert to..." />
-           </Menu>
-           <Menu mnemonicParsing="false" text="Help">
-               <MenuItem mnemonicParsing="false" onAction="#handleMenuEvent" text="User gufx:ide" />
-               <MenuItem mnemonicParsing="false" onAction="#handleMenuEvent" text="About" />
-           </Menu>
-       </MenuBar>
-   </top>
+<?import com.jfoenix.controls.*?>
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0"
+	prefWidth="1280.0" stylesheets="@../css/main.css" xmlns="http://javafx.com/javafx/9"
+	xmlns:fx="http://javafx.com/fxml/1" fx:controller="dev.crmyers.deuterium.ui.Main">
+	<top>
+		<MenuBar BorderPane.alignment="CENTER">
+			<Menu mnemonicParsing="false" text="File">
+				<MenuItem mnemonicParsing="false" onAction="#handleMenuEvent" text="New file" />
+				<MenuItem mnemonicParsing="false" onAction="#handleMenuEvent" text="Open" />
+				<MenuItem mnemonicParsing="false" onAction="#handleMenuEvent" text="Save" />
+				<MenuItem mnemonicParsing="false" onAction="#handleMenuEvent" text="Save as..." />
+				<SeparatorMenuItem mnemonicParsing="false" />
+				<MenuItem mnemonicParsing="false" onAction="#handleMenuEvent" text="Exit" />
+			</Menu>
+			<Menu mnemonicParsing="false" text="Edit">
+				<MenuItem mnemonicParsing="false" onAction="#handleMenuEvent" text="Undo" />
+				<MenuItem mnemonicParsing="false" onAction="#handleMenuEvent" text="Redo" />
+				<MenuItem mnemonicParsing="false" onAction="#handleMenuEvent" text="Copy" />
+				<MenuItem mnemonicParsing="false" onAction="#handleMenuEvent" text="Cut" />
+				<MenuItem mnemonicParsing="false" onAction="#handleMenuEvent" text="Paste" />
+				<SeparatorMenuItem mnemonicParsing="false" />
+				<MenuItem mnemonicParsing="false" onAction="#handleMenuEvent" text="New graph" />
+			</Menu>
+			<Menu mnemonicParsing="false" text="Node">
+				<MenuItem mnemonicParsing="false" onAction="#handleMenuEvent" text="Add node" />
+				<MenuItem mnemonicParsing="false" onAction="#handleMenuEvent" text="Delete node" />
+				<MenuItem mnemonicParsing="false" onAction="#handleMenuEvent" text="Add dependency" />
+				<MenuItem mnemonicParsing="false" onAction="#handleMenuEvent" text="Add dependent" />
+				<SeparatorMenuItem mnemonicParsing="false" />
+				<MenuItem mnemonicParsing="false" onAction="#handleMenuEvent" text="Select dependencies" />
+				<MenuItem mnemonicParsing="false" onAction="#handleMenuEvent" text="Sort dependencies" />
+				<MenuItem mnemonicParsing="false" onAction="#handleMenuEvent" text="Find loops" />
+				<MenuItem mnemonicParsing="false" onAction="#handleMenuEvent" text="Find shortest path" />
+				<MenuItem mnemonicParsing="false" onAction="#handleMenuEvent" text="Find exclusive dependencies" />
+			</Menu>
+			<Menu mnemonicParsing="false" text="History">
+				<MenuItem mnemonicParsing="false" onAction="#handleMenuEvent" text="Graph history" />
+				<MenuItem mnemonicParsing="false" onAction="#handleMenuEvent" text="Node history" />
+				<MenuItem mnemonicParsing="false" onAction="#handleMenuEvent" text="Revert to..." />
+			</Menu>
+			<Menu mnemonicParsing="false" text="Help">
+				<MenuItem mnemonicParsing="false" onAction="#handleMenuEvent" text="User guide" />
+				<MenuItem mnemonicParsing="false" onAction="#handleMenuEvent" text="About" />
+			</Menu>
+		</MenuBar>
+	</top>
+	<left>
+		<VBox prefWidth="64.0" spacing="16.0" stylesheets="@../css/buttonbar.css" BorderPane.alignment="CENTER">
+			<BorderPane.margin>
+				<Insets bottom="6.0" top="6.0" />
+			</BorderPane.margin>
+			<JFXNodesList maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefWidth="64.0"
+				rotate="-90.0" spacing="16.0">
+				<JFXButton>
+					<graphic>
+						<ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+							<Image url="@../icon/icon_node.png" />
+						</ImageView>
+					</graphic>
+					<tooltip>
+						<Tooltip text="Nodes" />
+					</tooltip>
+				</JFXButton>
+				<JFXButton buttonType="RAISED">
+					<graphic>
+						<FontAwesomeIconView glyphName="PLUS" />
+					</graphic>
+					<tooltip>
+						<Tooltip text="Add node" showDelay="0ms"/>
+					</tooltip>
+				</JFXButton>
+				<JFXButton buttonType="RAISED">
+					<graphic>
+						<FontAwesomeIconView glyphName="MINUS" />
+					</graphic>
+					<tooltip>
+						<Tooltip text="Delete node" showDelay="0ms"/>
+					</tooltip>
+				</JFXButton>
+				<JFXButton buttonType="RAISED">
+					<tooltip>
+						<Tooltip text="Add dependency" showDelay="0ms"/>
+					</tooltip>
+					<graphic>
+						<ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+							<Image url="@../icon/icon_node_add_dependency.png" />
+						</ImageView>
+					</graphic>
+				</JFXButton>
+				<JFXButton buttonType="RAISED">
+					<tooltip>
+						<Tooltip text="Add dependent" showDelay="0ms"/>
+					</tooltip>
+					<graphic>
+						<ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+							<Image url="@../icon/icon_node_add_dependent.png" />
+						</ImageView>
+					</graphic>
+				</JFXButton>
+			</JFXNodesList>
+			<JFXNodesList maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" rotate="-90.0"
+				spacing="16.0">
+				<JFXButton buttonType="RAISED">
+					<graphic>
+						<FontAwesomeIconView glyphName="WRENCH" />
+					</graphic>
+				</JFXButton>
+				<JFXButton buttonType="RAISED" text="D">
+					<tooltip>
+						<Tooltip text="Show dependencies" showDelay="0ms"/>
+					</tooltip>
+				</JFXButton>
+				<JFXButton buttonType="RAISED" text="O">
+					<tooltip>
+						<Tooltip text="Show learning order" showDelay="0ms"/>
+					</tooltip>
+				</JFXButton>
+				<JFXButton buttonType="RAISED" text="L">
+					<tooltip>
+						<Tooltip text="Find loops" showDelay="0ms"/>
+					</tooltip>
+				</JFXButton>
+				<JFXButton buttonType="RAISED" text="P">
+					<tooltip>
+						<Tooltip text="Find shortest path" />
+					</tooltip>
+				</JFXButton>
+				<JFXButton buttonType="RAISED" text="E">
+					<tooltip>
+						<Tooltip text="Find exclusive dependencies" showDelay="0ms"/>
+					</tooltip>
+				</JFXButton>
+			</JFXNodesList>
+			<JFXNodesList maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" rotate="-90.0"
+				spacing="16.0">
+				<JFXButton buttonType="RAISED">
+					<graphic>
+						<FontAwesomeIconView glyphName="HISTORY" />
+					</graphic>
+				</JFXButton>
+				<JFXButton buttonType="RAISED" text="G">
+					<tooltip>
+						<Tooltip text="Graph history" showDelay="0ms"/>
+					</tooltip>
+				</JFXButton>
+				<JFXButton buttonType="RAISED" text="N">
+					<tooltip>
+						<Tooltip text="Node history" showDelay="0ms"/>
+					</tooltip>
+				</JFXButton>
+				<JFXButton buttonType="RAISED" text="R">
+					<tooltip>
+						<Tooltip text="Revert to..." showDelay="0ms"/>
+					</tooltip>
+				</JFXButton>
+			</JFXNodesList>
+		</VBox>
+	</left>
 </BorderPane>

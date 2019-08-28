@@ -49,5 +49,6 @@ public class Launcher extends Application {
 
 		Scene scene = new Scene(fxmlLoader.load());
 		primaryStage.setScene(scene);
+		primaryStage.show();
 	}
 }
