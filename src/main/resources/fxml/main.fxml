@@ -58,7 +58,7 @@
 			</BorderPane.margin>
 			<JFXNodesList maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefWidth="64.0"
 				rotate="-90.0" spacing="16.0">
-				<JFXButton>
+				<JFXButton text="" >
 					<graphic>
 						<ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
 							<Image url="@../icon/icon_node.png" />
@@ -68,7 +68,7 @@
 						<Tooltip text="Nodes" />
 					</tooltip>
 				</JFXButton>
-				<JFXButton>
+				<JFXButton text="" >
 					<tooltip>
 						<Tooltip text="Add node" showDelay="0ms"/>
 					</tooltip>
@@ -76,7 +76,7 @@
 						<FontIcon iconLiteral="fas-plus"/>
 					</graphic>
 				</JFXButton>
-				<JFXButton>
+				<JFXButton text="" >
 					<tooltip>
 						<Tooltip text="Delete node" showDelay="0ms"/>
 					</tooltip>
@@ -84,7 +84,7 @@
 						<FontIcon iconLiteral="fas-minus"/>
 					</graphic>
 				</JFXButton>
-				<JFXButton>
+				<JFXButton text="" >
 					<tooltip>
 						<Tooltip text="Add dependency" showDelay="0ms"/>
 					</tooltip>
@@ -94,7 +94,7 @@
 						</ImageView>
 					</graphic>
 				</JFXButton>
-				<JFXButton>
+				<JFXButton text="" >
 					<tooltip>
 						<Tooltip text="Add dependent" showDelay="0ms"/>
 					</tooltip>
@@ -107,12 +107,12 @@
 			</JFXNodesList>
 			<JFXNodesList maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" rotate="-90.0"
 				spacing="16.0">
-				<JFXButton>
+				<JFXButton text="" >
 					<graphic>
 						<FontIcon iconLiteral="fas-tools"/>
 					</graphic>
 				</JFXButton>
-				<JFXButton>
+				<JFXButton text="" >
 					<tooltip>
 						<Tooltip text="Show dependencies" showDelay="0ms"/>
 					</tooltip>
@@ -120,7 +120,7 @@
 						<FontIcon iconLiteral="fas-code-branch"/>
 					</graphic>
 				</JFXButton>
-				<JFXButton>
+				<JFXButton text="" >
 					<tooltip>
 						<Tooltip text="Show learning order" showDelay="0ms"/>
 					</tooltip>
@@ -128,7 +128,7 @@
 						<FontIcon iconLiteral="fas-book-reader"/>
 					</graphic>
 				</JFXButton>
-				<JFXButton>
+				<JFXButton text="" >
 					<tooltip>
 						<Tooltip text="Find loops" showDelay="0ms"/>
 					</tooltip>
@@ -136,7 +136,7 @@
 						<FontIcon iconLiteral="gmi-loop"/>
 					</graphic>
 				</JFXButton>
-				<JFXButton>
+				<JFXButton text="" >
 					<tooltip>
 						<Tooltip text="Find shortest path" />
 					</tooltip>
@@ -144,7 +144,7 @@
 						<FontIcon iconLiteral="fas-route"/>
 					</graphic>
 				</JFXButton>
-				<JFXButton>
+				<JFXButton text="" >
 					<tooltip>
 						<Tooltip text="Find exclusive dependencies" showDelay="0ms"/>
 					</tooltip>
@@ -155,12 +155,12 @@
 			</JFXNodesList>
 			<JFXNodesList maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" rotate="-90.0"
 				spacing="16.0">
-				<JFXButton>
+				<JFXButton text="" >
 					<graphic>
 						<FontIcon iconLiteral="fas-history"/>
 					</graphic>
 				</JFXButton>
-				<JFXButton>
+				<JFXButton text="" >
 					<tooltip>
 						<Tooltip text="Graph history" showDelay="0ms"/>
 					</tooltip>
@@ -170,7 +170,7 @@
 						</ImageView>
 					</graphic>
 				</JFXButton>
-				<JFXButton>
+				<JFXButton text="" >
 					<tooltip>
 						<Tooltip text="Node history" showDelay="0ms"/>
 					</tooltip>
@@ -178,7 +178,7 @@
 						<FontIcon iconLiteral="fas-circle"/>
 					</graphic>
 				</JFXButton>
-				<JFXButton>
+				<JFXButton text="" >
 					<tooltip>
 						<Tooltip text="Revert to..." showDelay="0ms"/>
 					</tooltip>
