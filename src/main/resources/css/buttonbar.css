@@ -24,12 +24,16 @@
 	-fx-text-fill: #CCC;
 	-fx-pref-height: 48;
 	-fx-pref-width: 48;
+	-fx-font-size: 0px;
+	-jfx-button-type: "RAISED"
 }
 
-FontAwesomeIconView {
-	-fx-scale-x: 200%;
-	-fx-scale-y: 200%;
-	-fx-fill: #FFF;
+.ikonli-font-icon{
+	-fx-icon-size: 24px;
+	-fx-icon-color: #FFF;
 }
 
-
+.stacked-icon {
+	-fx-icon-size: 16px;
+	-fx-icon-color: #000;
+}

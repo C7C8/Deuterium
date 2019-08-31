@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import com.jfoenix.controls.*?>
-<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.*?><?import org.kordamp.ikonli.javafx.FontIcon?><?import org.kordamp.ikonli.javafx.StackedFontIcon?>
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0"
 	prefWidth="1280.0" stylesheets="@../css/main.css" xmlns="http://javafx.com/javafx/9"
 	xmlns:fx="http://javafx.com/fxml/1" fx:controller="dev.crmyers.deuterium.ui.Main">
@@ -69,23 +68,23 @@
 						<Tooltip text="Nodes" />
 					</tooltip>
 				</JFXButton>
-				<JFXButton buttonType="RAISED">
-					<graphic>
-						<FontAwesomeIconView glyphName="PLUS" />
-					</graphic>
+				<JFXButton>
 					<tooltip>
 						<Tooltip text="Add node" showDelay="0ms"/>
 					</tooltip>
-				</JFXButton>
-				<JFXButton buttonType="RAISED">
 					<graphic>
-						<FontAwesomeIconView glyphName="MINUS" />
+						<FontIcon iconLiteral="fas-plus"/>
 					</graphic>
+				</JFXButton>
+				<JFXButton>
 					<tooltip>
 						<Tooltip text="Delete node" showDelay="0ms"/>
 					</tooltip>
+					<graphic>
+						<FontIcon iconLiteral="fas-minus"/>
+					</graphic>
 				</JFXButton>
-				<JFXButton buttonType="RAISED">
+				<JFXButton>
 					<tooltip>
 						<Tooltip text="Add dependency" showDelay="0ms"/>
 					</tooltip>
@@ -95,7 +94,7 @@
 						</ImageView>
 					</graphic>
 				</JFXButton>
-				<JFXButton buttonType="RAISED">
+				<JFXButton>
 					<tooltip>
 						<Tooltip text="Add dependent" showDelay="0ms"/>
 					</tooltip>
@@ -108,58 +107,84 @@
 			</JFXNodesList>
 			<JFXNodesList maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" rotate="-90.0"
 				spacing="16.0">
-				<JFXButton buttonType="RAISED">
+				<JFXButton>
 					<graphic>
-						<FontAwesomeIconView glyphName="WRENCH" />
+						<FontIcon iconLiteral="fas-tools"/>
 					</graphic>
 				</JFXButton>
-				<JFXButton buttonType="RAISED" text="D">
+				<JFXButton>
 					<tooltip>
 						<Tooltip text="Show dependencies" showDelay="0ms"/>
 					</tooltip>
+					<graphic>
+						<FontIcon iconLiteral="fas-code-branch"/>
+					</graphic>
 				</JFXButton>
-				<JFXButton buttonType="RAISED" text="O">
+				<JFXButton>
 					<tooltip>
 						<Tooltip text="Show learning order" showDelay="0ms"/>
 					</tooltip>
+					<graphic>
+						<FontIcon iconLiteral="fas-book-reader"/>
+					</graphic>
 				</JFXButton>
-				<JFXButton buttonType="RAISED" text="L">
+				<JFXButton>
 					<tooltip>
 						<Tooltip text="Find loops" showDelay="0ms"/>
 					</tooltip>
+					<graphic>
+						<FontIcon iconLiteral="gmi-loop"/>
+					</graphic>
 				</JFXButton>
-				<JFXButton buttonType="RAISED" text="P">
+				<JFXButton>
 					<tooltip>
 						<Tooltip text="Find shortest path" />
 					</tooltip>
+					<graphic>
+						<FontIcon iconLiteral="fas-route"/>
+					</graphic>
 				</JFXButton>
-				<JFXButton buttonType="RAISED" text="E">
+				<JFXButton>
 					<tooltip>
 						<Tooltip text="Find exclusive dependencies" showDelay="0ms"/>
 					</tooltip>
+					<graphic>
+						<FontIcon iconLiteral="mdi-file-tree"/>
+					</graphic>
 				</JFXButton>
 			</JFXNodesList>
 			<JFXNodesList maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" rotate="-90.0"
 				spacing="16.0">
-				<JFXButton buttonType="RAISED">
+				<JFXButton>
 					<graphic>
-						<FontAwesomeIconView glyphName="HISTORY" />
+						<FontIcon iconLiteral="fas-history"/>
 					</graphic>
 				</JFXButton>
-				<JFXButton buttonType="RAISED" text="G">
+				<JFXButton>
 					<tooltip>
 						<Tooltip text="Graph history" showDelay="0ms"/>
 					</tooltip>
+					<graphic>
+						<ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+							<Image url="@../icon/icon_node.png" />
+						</ImageView>
+					</graphic>
 				</JFXButton>
-				<JFXButton buttonType="RAISED" text="N">
+				<JFXButton>
 					<tooltip>
 						<Tooltip text="Node history" showDelay="0ms"/>
 					</tooltip>
+					<graphic>
+						<FontIcon iconLiteral="fas-circle"/>
+					</graphic>
 				</JFXButton>
-				<JFXButton buttonType="RAISED" text="R">
+				<JFXButton>
 					<tooltip>
 						<Tooltip text="Revert to..." showDelay="0ms"/>
 					</tooltip>
+					<graphic>
+						<FontIcon iconLiteral="fas-undo"/>
+					</graphic>
 				</JFXButton>
 			</JFXNodesList>
 		</VBox>
