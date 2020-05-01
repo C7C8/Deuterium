@@ -22,14 +22,16 @@ plugins {
     id 'idea'
     id 'application'
     id 'jacoco'
+    id 'com.diffplug.gradle.spotless' version '3.27.1'
     id 'org.openjfx.javafxplugin' version '0.0.8'
     id "com.google.protobuf" version "0.8.10"
+    id "io.freefair.lombok" version "5.0.0-rc6"
 }
 
 group 'dev.crmyers'
 version '0.1.0'
-sourceCompatibility = 1.12
-targetCompatibility = 1.12
+sourceCompatibility = 1.13
+targetCompatibility = 1.13
 mainClassName = 'dev.crmyers.deuterium.Launcher'
 applicationDefaultJvmArgs = ["-Dadd-opens=javafx.graphics/javafx.css=ALL-UNKNOWN"]
 
@@ -44,6 +46,11 @@ javafx {
 
 repositories {
     mavenCentral()
+    jcenter()
+}
+
+jacoco {
+    toolVersion = "0.8.4"
 }
 
 jacocoTestReport {
@@ -52,6 +59,9 @@ jacocoTestReport {
         html.enabled true
     }
 }
+
+def codeCoverageExcludes = [
+]
 
 dependencies {
     compile(
@@ -151,4 +161,46 @@ task uiTest(type: Test) {
     maxHeapSize="4g"
 }
 
-check.dependsOn jacocoTestReport
+jacocoTestCoverageVerification {
+    violationRules {
+        rule {
+            element = 'CLASS'
+            limit {
+                counter = 'CLASS'
+                value = 'COVEREDRATIO'
+                minimum = 1.0
+            }
+            excludes = codeCoverageExcludes
+        }
+
+        rule {
+            element = 'CLASS'
+            limit {
+                counter = 'LINE'
+                value = 'COVEREDRATIO'
+                minimum = 0.75
+            }
+            excludes = codeCoverageExcludes
+        }
+
+        rule {
+            element = 'CLASS'
+            limit {
+                counter = 'BRANCH'
+                value = 'COVEREDRATIO'
+                minimum = 0.75
+            }
+            excludes = codeCoverageExcludes
+        }
+    }
+}
+
+check.dependsOn jacocoTestCoverageVerification
+jacocoTestCoverageVerification.dependsOn jacocoTestReport
+compileJava.dependsOn 'spotlessApply'
+
+spotless {
+    java {
+        googleJavaFormat()
+    }
+}
