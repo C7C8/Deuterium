@@ -1,0 +1,76 @@
+/*
+ * Copyright (c) 2020 Christopher Myers
+ *
+ * This file is part of Deuterium.
+ *
+ * Deuterium is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Deuterium is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Deuterium.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+jacoco {
+	toolVersion = "0.8.4"
+}
+
+jacocoTestReport {
+	reports {
+		xml.enabled true
+		html.enabled true
+	}
+}
+
+def codeCoverageExcludes = [
+]
+
+jacocoTestCoverageVerification {
+	violationRules {
+		rule {
+			element = 'CLASS'
+			limit {
+				counter = 'CLASS'
+				value = 'COVEREDRATIO'
+				minimum = 1.0
+			}
+			excludes = codeCoverageExcludes
+		}
+
+		rule {
+			element = 'CLASS'
+			limit {
+				counter = 'LINE'
+				value = 'COVEREDRATIO'
+				minimum = 0.75
+			}
+			excludes = codeCoverageExcludes
+		}
+
+		rule {
+			element = 'CLASS'
+			limit {
+				counter = 'BRANCH'
+				value = 'COVEREDRATIO'
+				minimum = 0.75
+			}
+			excludes = codeCoverageExcludes
+		}
+	}
+}
+
+check.dependsOn jacocoTestCoverageVerification
+jacocoTestCoverageVerification.dependsOn jacocoTestReport
+compileJava.dependsOn 'spotlessApply'
+
+spotless {
+	java {
+		googleJavaFormat()
+	}
+}
