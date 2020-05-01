@@ -3,7 +3,7 @@ language: java
 os: linux
 sudo: true
 dist: bionic
-jdk: openjdk12
+jdk: openjdk13
 services: xvfb
 env:
   - _JAVA_OPTIONS="-Djava.awt.headless=true -Dtestfx.robot=glass -Dtestfx.headless=true -Dprism.order=sw"
