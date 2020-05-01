@@ -1,21 +1,21 @@
 /*
- * Copyright (c) 2019 Christopher Myers
- *
- * This file is part of Deuterium.
- *
- * Deuterium is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * Deuterium is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with Deuterium.  If not, see <https://www.gnu.org/licenses/>.
- */
+* Copyright (c) 2019 Christopher Myers
+*
+* This file is part of Deuterium.
+*
+* Deuterium is free software: you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*
+* Deuterium is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with Deuterium.  If not, see <https://www.gnu.org/licenses/>.
+*/
 
 package dev.crmyers.deuterium.model;
 
@@ -24,13 +24,13 @@ import com.google.common.graph.*;
 import dev.crmyers.deuterium.command.EditNodeCommand;
 import dev.crmyers.deuterium.model.exception.CycleException;
 import dev.crmyers.deuterium.model.exception.DependencyException;
+import java.util.*;
 import lombok.*;
 
-import java.util.*;
-
 /**
- * Class to represent a Deuterium graph. Implements the MutableGraph interface but delegates to a Guava graph.
- */
+* Class to represent a Deuterium graph. Implements the MutableGraph interface but delegates to a
+* Guava graph.
+*/
 @SuppressWarnings({"UnstableApiUsage", "NullableProblems"})
 @Data
 @AllArgsConstructor
@@ -47,28 +47,30 @@ public class DeuteriumGraph implements MutableGraph<Node> {
 	MutableGraph<Node> graph = GraphBuilder.directed().build();
 
 	/**
-	 * Determines whether the given node has the given dependency
-	 * @param node Node to check on
-	 * @param dependency Potential dependency
-	 * @return Whether the node has dependency in its successor list
-	 */
+	* Determines whether the given node has the given dependency
+	*
+	* @param node Node to check on
+	* @param dependency Potential dependency
+	* @return Whether the node has dependency in its successor list
+	*/
 	public boolean dependsOn(final Node node, final Node dependency) {
 		return successors(node).contains(dependency);
 	}
 
 	/**
-	 * For a given dependent node, determine all dependencies and return a topological sort of them.
-	 * @return Topologically sorted set of node's dependencies, with dependent at the end. Note that this is NOT the
-	 * same as a topological sort of the graph!
-	 * @throws CycleException If a cycle is detected in the node's dependency tree; the exception will contain a set of
-	 * nodes involved in the cycle.
-	 */
+	* For a given dependent node, determine all dependencies and return a topological sort of them.
+	*
+	* @return Topologically sorted set of node's dependencies, with dependent at the end. Note that
+	*     this is NOT the same as a topological sort of the graph!
+	* @throws CycleException If a cycle is detected in the node's dependency tree; the exception
+	*     will contain a set of nodes involved in the cycle.
+	*/
 	public List<Node> solveDependencies(final Node dependent) throws CycleException {
 		// Run cycle detection on a graph formed from only this node plus its successors
-		final MutableGraph<Node> dependencyGraph = Graphs.inducedSubgraph(graph, Graphs.reachableNodes(graph, dependent));
+		final MutableGraph<Node> dependencyGraph =
+				Graphs.inducedSubgraph(graph, Graphs.reachableNodes(graph, dependent));
 		final Set<Node> cycleNodes = findCycleBranchedFrom(dependencyGraph, dependent);
-		if (!cycleNodes.isEmpty())
-			throw new CycleException("Cycle detected", cycleNodes);
+		if (!cycleNodes.isEmpty()) throw new CycleException("Cycle detected", cycleNodes);
 
 		final Stack<Node> stack = new Stack<>();
 		final LinkedHashSet<Node> visited = new LinkedHashSet<>();
@@ -80,8 +82,7 @@ public class DeuteriumGraph implements MutableGraph<Node> {
 			visited.add(top);
 
 			for (Node node : dependencyGraph.successors(top)) {
-				if (!visited.contains(node))
-					stack.push(node);
+				if (!visited.contains(node)) stack.push(node);
 			}
 		}
 
@@ -92,13 +93,15 @@ public class DeuteriumGraph implements MutableGraph<Node> {
 	}
 
 	/**
-	 * Find a cycle in the graph that can be found by branching off the given node. Cycles do not necessarily have to
-	 * involve the given node, the cycle just has to be accessible from it. Ex. A-> B <-> C will return (B, C) when run
-	 * on A because the B/C cycle is accessible from A.
-	 * @param graph Graph.
-	 * @param node Node to search from.
-	 * @return Set containing nodes involved in the cycle; if no cycle exists, the set will be empty.
-	 */
+	* Find a cycle in the graph that can be found by branching off the given node. Cycles do not
+	* necessarily have to involve the given node, the cycle just has to be accessible from it. Ex.
+	* A-> B <-> C will return (B, C) when run on A because the B/C cycle is accessible from A.
+	*
+	* @param graph Graph.
+	* @param node Node to search from.
+	* @return Set containing nodes involved in the cycle; if no cycle exists, the set will be
+	*     empty.
+	*/
 	private static Set<Node> findCycleBranchedFrom(final Graph<Node> graph, final Node node) {
 		Queue<Node> queue = new ArrayDeque<>();
 		Set<Node> visited = new HashSet<>();
@@ -111,18 +114,20 @@ public class DeuteriumGraph implements MutableGraph<Node> {
 			Node v = queue.remove();
 			for (Node w : graph.successors(v)) {
 				// Found a cycle!
-				if (!start && node.equals(w)) // hack to make sure the algorithm works on the first iteration
+				if (!start && node.equals(w)) {
+					// hack to make sure the algorithm works on the first iteration
 					return visited;
+				}
 
 				if (!visited.contains(w)) {
 					visited.add(w);
 					queue.add(w);
-				}
-				else {
-					// Something weird is going on, we've re-encountered a node, so somehow this node is involved in
-					// a cycle. Re-run the search from this node, but on a graph that contains only those nodes accessible
-					// from this one.
-					return findCycleBranchedFrom(Graphs.inducedSubgraph(graph, Graphs.reachableNodes(graph, w)), w);
+				} else {
+					// Something weird is going on, we've re-encountered a node, so somehow this
+					// node is involved in a cycle. Re-run the search from this node, but on a graph
+					// that contains only those nodes accessible from this one.
+					return findCycleBranchedFrom(
+							Graphs.inducedSubgraph(graph, Graphs.reachableNodes(graph, w)), w);
 				}
 			}
 			start = false;
@@ -133,22 +138,25 @@ public class DeuteriumGraph implements MutableGraph<Node> {
 	}
 
 	/**
-	 * Find all nodes reachable by this node that cannot be accessed by any other. That is, find all nodes that, if you
-	 * were to remove the given node, would form one or more disjoint subgraphs of the original graph. Think of this
-	 * function as a way to find choke points.
-	 * @param node Node to start search from
-	 * @return Set of nodes exclusively dependent on the given node. If there are none, the set will be empty.
-	 */
+	* Find all nodes reachable by this node that cannot be accessed by any other. That is, find all
+	* nodes that, if you were to remove the given node, would form one or more disjoint subgraphs
+	* of the original graph. Think of this function as a way to find choke points.
+	*
+	* @param node Node to start search from
+	* @return Set of nodes exclusively dependent on the given node. If there are none, the set will
+	*     be empty.
+	*/
 	public Set<Node> findAllExclusivelyDependentOn(final Node node) {
-		// Obtain the topologically-sorted dependency list for this node and iterate through it; anything that has a
-		// dependency not already listed in the dependency list is removed. This has the effect of pruning any direct
+		// Obtain the topologically-sorted dependency list for this node and iterate through it;
+		// anything that has a
+		// dependency not already listed in the dependency list is removed. This has the effect of
+		// pruning any direct
 		// children of it, too, since their parent will have just been removed.
 		final List<Node> dependencies = solveDependencies(node);
 		Collections.reverse(dependencies);
 		final HashSet<Node> ret = new HashSet<>(dependencies);
 		for (Node successor : dependencies) {
-			if (successor.equals(node))
-				continue;
+			if (successor.equals(node)) continue;
 			if (!Sets.difference(graph.predecessors(successor), ret).isEmpty())
 				ret.remove(successor);
 		}
@@ -157,12 +165,13 @@ public class DeuteriumGraph implements MutableGraph<Node> {
 	}
 
 	/**
-	 * Find the shortest path from one node to another.
-	 * @param from Start node
-	 * @param to End node
-	 * @return Ordered list of nodes to traverse, starting with from and ending with to.
-	 * @throws DependencyException Thrown if no path can be found.
-	 */
+	* Find the shortest path from one node to another.
+	*
+	* @param from Start node
+	* @param to End node
+	* @return Ordered list of nodes to traverse, starting with from and ending with to.
+	* @throws DependencyException Thrown if no path can be found.
+	*/
 	public List<Node> shortestPath(final Node from, final Node to) throws DependencyException {
 		Queue<Node> queue = new ArrayDeque<>();
 		Set<Node> visited = new HashSet<>();
@@ -187,12 +196,10 @@ public class DeuteriumGraph implements MutableGraph<Node> {
 					parents.put(w, v);
 				}
 			}
-			if (finished)
-				break;
+			if (finished) break;
 		}
 
-		if (!parents.containsKey(to))
-				throw new DependencyException("No path to node");
+		if (!parents.containsKey(to)) throw new DependencyException("No path to node");
 
 		ArrayList<Node> ret = new ArrayList<>();
 		Node current = to;
